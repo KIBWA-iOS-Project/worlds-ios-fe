@@ -73,7 +73,7 @@ struct MenteeView: View {
                     )
                     .padding(.top, -30)
                     
-                    NavigationLink(destination: HelpAi()) { // 화면이동
+                    NavigationLink(destination: HelpAiView()) { // 화면이동
                         HStack {
                             Image("helpai")
                                 .resizable()
@@ -94,7 +94,7 @@ struct MenteeView: View {
                         .padding(.bottom)
                     }
                     
-                    NavigationLink(destination: HelpAi()) { // 화면이동 수정!!
+                    NavigationLink(destination: HelpAiView()) { // 화면이동 수정!!
                         HStack {
                             Image("mentor")
                                 .resizable()

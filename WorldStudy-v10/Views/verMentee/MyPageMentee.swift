@@ -14,9 +14,24 @@ struct MyPageMentee: View {
     @State private var showPasswordAlert = false
     @State private var newPassword: String = ""
     let recentPosts: [Question] = [
-        Question(id: 1, title: "처음 쓴 글", content: "내용1", createdAt: Date(), deletedAt: nil, userId: 1),
-        Question(id: 2, title: "두 번째 글", content: "내용2", createdAt: Date(), deletedAt: nil, userId: 1),
-        Question(id: 3, title: "세 번째 글", content: "내용3", createdAt: Date(), deletedAt: nil, userId: 1)
+        Question(
+            id: 1,
+            title: "처음 쓴 글",
+            content: "내용1",
+            createdAt: Date(),
+            deletedAt: nil,
+            userId: 1,
+            role: "멘티",
+            answers: [
+                Answer(
+                    id: 1,
+                    content: "답변1",
+                    userId: "2",
+                    questionId: 1,
+                    createdAt: Date(),
+                    deletedAt: nil
+                )
+                    ]),
     ]
     
     var body: some View {

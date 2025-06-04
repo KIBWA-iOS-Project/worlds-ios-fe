@@ -96,7 +96,7 @@ struct QuestionViewMentee: View {
                         isPresented: $showingCreateQuestionSheet,
                         isCreating: $isCreatingQuestion,
                         errorMessage: $createQuestionError,
-                        onSubmit: {
+                        onSubmit: {selectedImage in
                             Task {
                                 isCreatingQuestion = true
                                 do {
