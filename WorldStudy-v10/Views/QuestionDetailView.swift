@@ -10,8 +10,7 @@ import SwiftUI
 
 struct QuestionDetailView: View {
     let question: Question
-    let currentMentorId = "멘토아이디123"
-//    let answer: [Answer]
+    //    let answer: [Answer] //!!!!!!   퀘스쳔 모델에서 분리해서 다시 코드 확인 필!!!!!
     @State var answer: [Answer] = []
     
     @State private var goToCreateAnswerView = false
@@ -79,24 +78,29 @@ struct QuestionDetailView: View {
                     .cornerRadius(10)
                     .padding(.horizontal)
             }
-            .sheet(isPresented: $goToCreateAnswerView, content: {
-                CreateAnswerView(
-                    questionId: question.id,
-                    mentorId: currentMentorId,
-                    onSubmit: { createAnswer in
-                        answer.append(createAnswer)
-                    }
-                )
-            })
+            .sheet(isPresented: $goToCreateAnswerView) {
+                CreateAnswerView(question: question) { newAnswer in
+                    answer.append(newAnswer)
+                }
+            }
             
-//            .sheet(isPresented: $goToCreateAnswerView) {
-//                CreateAnswerView (
-//                    userId: currentUserId,
-//                    onSubmit: { createAnswer in
-//                        answeranswerVM.postAnswer(newAnswer, for: question.id)
-//            }
+            
+            //            .sheet(isPresented: $goToCreateAnswerView) {
+            //                CreateAnswerView (
+            //                    userId: currentUserId,
+            //                    onSubmit: { createAnswer in
+            //                        answeranswerVM.postAnswer(newAnswer, for: question.id)
+            //            }
         }
         .padding(.bottom, 20)
+        .onAppear {
+            Task {
+                do {
+                    self.answer = try await APIService.shared.fetchAnswers(questionId: question.id)
+                } catch {
+                    print("답변 로딩 실패: \(error.localizedDescription)")
+                }
+            }
+        }
     }
 }
-
