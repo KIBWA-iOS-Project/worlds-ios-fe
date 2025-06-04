@@ -9,7 +9,7 @@ import Combine
 import Foundation
 
 class QuestionViewModel: ObservableObject {
-    @Published var questions: [Question] = []
+    @Published var questions: [Questions] = []
     @Published var errorMessage: String?
 
     func loadUserQuestions() {
