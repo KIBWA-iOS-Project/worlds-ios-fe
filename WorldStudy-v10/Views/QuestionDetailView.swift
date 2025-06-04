@@ -10,6 +10,7 @@ import SwiftUI
 
 struct QuestionDetailView: View {
     let question: Question
+    let currentMentorId = "멘토아이디123"
 //    let answer: [Answer]
     @State var answer: [Answer] = []
     
@@ -79,9 +80,13 @@ struct QuestionDetailView: View {
                     .padding(.horizontal)
             }
             .sheet(isPresented: $goToCreateAnswerView, content: {
-                CreateAnswerView { createAnswer in
-                    answer.append(createAnswer)
-                }
+                CreateAnswerView(
+                    questionId: question.id,
+                    mentorId: currentMentorId,
+                    onSubmit: { createAnswer in
+                        answer.append(createAnswer)
+                    }
+                )
             })
             
 //            .sheet(isPresented: $goToCreateAnswerView) {

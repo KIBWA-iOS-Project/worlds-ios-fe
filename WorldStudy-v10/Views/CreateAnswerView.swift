@@ -7,34 +7,33 @@
 
 import SwiftUI
 
-//struct CreateAnswerView: View {
-//    var onSubmit: (Answer) -> Void
-//    
-//    @Environment(\.presentationMode) var presentationMode
-//    
-//    // 예시용 상태
-//    @State private var answerContent = ""
-//    
-//    var body: some View {
-//        VStack {
-//            TextField("답변 입력", text: $answerContent)
-//                .textFieldStyle(RoundedBorderTextFieldStyle())
-//                .padding()
-//            
-//            Button("등록") {
-//
-//                let newAnswer = Answer(
-//                    id: Int.random(in: 1...1000),
-//                    content: createAnswerContent,
-//                    userId: "멘토아이디",
-//                    questionId: question.createdAt
-//                    createdAt: Date(),
-//                    deletedAt: nil
-//                    )
-//                onSubmit(newAnswer)
-//                presentationMode.wrappedValue.dismiss()
-//            }
-//            .padding()
-//        }
-//    }
-//}
+struct CreateAnswerView: View {
+    var questionId: Int
+    var mentorId: String
+    var onSubmit: (Answer) -> Void
+
+    @Environment(\.presentationMode) var presentationMode
+    @State private var answerContent = ""
+
+    var body: some View {
+        VStack {
+            TextField("답변 입력", text: $answerContent)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+
+            Button("등록") {
+                let newAnswer = Answer(
+                    id: Int.random(in: 1...100000),
+                    content: answerContent,
+                    userId: mentorId,
+                    questionId: questionId,
+                    createdAt: Date(),
+                    deletedAt: nil
+                )
+                onSubmit(newAnswer)
+                presentationMode.wrappedValue.dismiss()
+            }
+            .padding()
+        }
+    }
+}
