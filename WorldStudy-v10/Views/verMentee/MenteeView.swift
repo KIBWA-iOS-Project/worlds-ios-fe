@@ -94,7 +94,7 @@ struct MenteeView: View {
                         .padding(.bottom)
                     }
                     
-                    NavigationLink(destination: HelpAiView()) { // 화면이동 수정!!
+                    NavigationLink(destination: QuestionViewMentee(viewModel: QBoardViewModel())) { // 화면이동 수정!!
                         HStack {
                             Image("mentor")
                                 .resizable()

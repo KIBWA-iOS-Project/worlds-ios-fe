@@ -39,7 +39,7 @@ struct MentorView: View {
                     
                     rankingSection
                     
-                    NavigationLink(destination: HelpAiView()) { // 이동 view 수정 !!
+                    NavigationLink(destination: QuestionViewMentor(viewModel: QBoardViewModel())) { // 이동 view 수정 !!
                         VStack {
                             HStack {
                                 Text("질문 보러가기")

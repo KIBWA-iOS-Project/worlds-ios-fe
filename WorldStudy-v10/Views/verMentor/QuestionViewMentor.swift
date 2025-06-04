@@ -70,17 +70,6 @@ struct QuestionViewMentor: View {
                 //                        showingCreateQuestionSheet = true
                 //                    }
                 //                }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        //화면이동
-                        goToMyPageMenteeView = true //화면이동-메인페이지 생성 후 변경
-                    }) {
-                        Image(systemName: "chevron.left")
-                            .foregroundColor(.gray)
-                            .padding(.leading, 15)
-                            .frame(width: 20, height: 30)
-                    }
-                }
             }
             .onAppear {
                 Task {
