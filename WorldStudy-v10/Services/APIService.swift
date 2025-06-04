@@ -42,19 +42,7 @@ class APIService {
         }
         return true
     }
-    
-    //게시판 글 목록
-    func fetchQuestions() async throws -> [Question] { //[테이블]
-        let headers = try getAuthHeaders()
-        
-        //Alamofire로 /question API에 GET 요청을 보내고, 응답을 [Question]으로 디코딩
-        let response = try await AF.request("\(baseURL)/question", headers: headers) //headers는 인증역할
-            .serializingDecodable([Question].self)
-            .value
-        
-        return response
-    }
-    
+
     // 로그인
     func login(email: String, password: String) async throws -> (token: String, role: String, name: String, userId: Int)? {
         let params = ["email": email, "password": password]
@@ -89,6 +77,18 @@ class APIService {
         return response
             .filter { $0.user.id == userId }
             .sorted { $0.createdAt > $1.createdAt } // 최신순
+    }
+    
+    //게시판 글 목록
+    func fetchQuestions() async throws -> [Question] { //[테이블]
+        let headers = try getAuthHeaders()
+        
+        //Alamofire로 /question API에 GET 요청을 보내고, 응답을 [Question]으로 디코딩
+        let response = try await AF.request("\(baseURL)/question", headers: headers) //headers는 인증역할
+            .serializingDecodable([Question].self)
+            .value
+        
+        return response
     }
     
     //게시글 상세
@@ -155,14 +155,15 @@ class APIService {
     
 
     //댓글 작성
-    func createAnswer(questionId: Int, content: String) async throws -> Bool {
+    func createAnswer(questionId: Int, content: String) async throws -> Answer {
         let params = ["content": content]
         let headers = try getAuthHeaders()
-        let response = await AF.request("(baseURL)/question/\(questionId)/answer", method: .post, parameters: params, encoding: JSONEncoding.default, headers: headers)
+        
+        let answer = try await AF.request("\(baseURL)/question/\(questionId)/answer", method: .post, parameters: params, encoding: JSONEncoding.default, headers: headers)
             .validate()
-            .serializingData()
-            .response
-        return response.error == nil
+            .serializingDecodable(Answer.self)
+            .value
+        return answer
     }
     
     //댓글 목록 조회
