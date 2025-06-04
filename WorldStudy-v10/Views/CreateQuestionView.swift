@@ -20,7 +20,7 @@ struct CreateQuestionView: View {
     @State private var selectedImage: UIImage?
     @State private var imagePickerSourceType: UIImagePickerController.SourceType = .photoLibrary
     
-    var onSubmit: (_ selectedImage: UIImage?) -> Void
+    var onSubmit: (UIImage?) -> Void
 
     var body: some View {
         NavigationView {
@@ -73,6 +73,7 @@ struct CreateQuestionView: View {
                         .foregroundColor(.red)
                 }
 
+                //등록 중 로딩
                 if isCreating {
                     ProgressView()
                 }
@@ -111,4 +112,3 @@ struct CreateQuestionView: View {
         }
     }
 }
-
