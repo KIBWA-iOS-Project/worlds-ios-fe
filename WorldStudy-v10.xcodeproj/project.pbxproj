@@ -14,9 +14,22 @@
 		9F2533392DE4C1B200B526A5 /* WorldStudy-v10.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WorldStudy-v10.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CCECBFA52DF03DFC00E73684 /* Exceptions for "WorldStudy-v10" folder in "WorldStudy-v10" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9F2533382DE4C1B200B526A5 /* WorldStudy-v10 */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9F25333B2DE4C1B200B526A5 /* WorldStudy-v10 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CCECBFA52DF03DFC00E73684 /* Exceptions for "WorldStudy-v10" folder in "WorldStudy-v10" target */,
+			);
 			path = "WorldStudy-v10";
 			sourceTree = "<group>";
 		};
@@ -261,9 +274,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"WorldStudy-v10/Preview Content\"";
-				DEVELOPMENT_TEAM = A64NU99HZZ;
+				DEVELOPMENT_TEAM = 4QADHTMZMX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "WorldStudy-v10/Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "멘토에게 질문을 하기 위한 사진을 찍기 위해 사용됩니다.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "멘토에게 질문을 하기 위해 앨범이 사용됩니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -276,7 +290,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.kibwa.shl.WorldStudy-v10";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.kibwa.lsh.WorldStudy-v10";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -292,9 +306,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"WorldStudy-v10/Preview Content\"";
-				DEVELOPMENT_TEAM = A64NU99HZZ;
+				DEVELOPMENT_TEAM = 4QADHTMZMX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "WorldStudy-v10/Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "멘토에게 질문을 하기 위한 사진을 찍기 위해 사용됩니다.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "멘토에게 질문을 하기 위해 앨범이 사용됩니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -307,7 +322,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.kibwa.shl.WorldStudy-v10";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.kibwa.lsh.WorldStudy-v10";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

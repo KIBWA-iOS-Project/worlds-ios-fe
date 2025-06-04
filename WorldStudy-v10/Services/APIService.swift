@@ -11,7 +11,7 @@ import UIKit
 
 class APIService {
     static let shared = APIService()
-    let baseURL = "http://localhost:3000"
+    let baseURL = "http://72.155.72.12"
     enum APIError: Error {
         case missingToken
     }
