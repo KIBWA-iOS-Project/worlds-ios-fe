@@ -16,3 +16,9 @@ struct Answer: Codable, Identifiable, Hashable {
     let createdAt: Date
     let deletedAt: Date?
 }
+
+struct MentorRanking: Identifiable, Codable {
+    var id: Int { UUID().hashValue } // 고유 ID (임시)
+    let name: String
+    let count: Int
+}

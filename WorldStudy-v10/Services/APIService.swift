@@ -27,6 +27,22 @@ class APIService {
         return ["Authorization": "Bearer \(token)"] //이걸 헤더에 실어보내는 것
     }
     
+    // 회원가입
+    func signup(email: String, password: String, name: String, role: String) async throws -> Bool {
+        let params = ["email": email, "password": password, "name": name, "role": role]
+
+        let response = try await AF.request("\(baseURL)/auth/signup", method: .post, parameters: params, encoding: JSONEncoding.default)
+            .validate()
+            .serializingData()
+            .response
+
+        if let error = response.error {
+            print("Signup error: \(error.localizedDescription)")
+            return false
+        }
+        return true
+    }
+    
     //게시판 글 목록
     func fetchQuestions() async throws -> [Question] { //[테이블]
         let headers = try getAuthHeaders()
@@ -37,6 +53,42 @@ class APIService {
             .value
         
         return response
+    }
+    
+    // 로그인
+    func login(email: String, password: String) async throws -> (token: String, role: String, name: String, userId: Int)? {
+        let params = ["email": email, "password": password]
+
+        let response = try await AF.request("\(baseURL)/auth/login", method: .post, parameters: params, encoding: JSONEncoding.default)
+            .validate()
+            .serializingDecodable(LoginResponse.self)
+            .value
+
+        return (response.access_token, response.role, response.name, response.userId)
+    }
+    
+    // 멘토 랭킹
+    func fetchMentorRankings() async throws -> [MentorRanking] {
+        let headers = try getAuthHeaders()
+        let response = try await AF.request("\(baseURL)/answer/ranking/mentors", headers: headers)
+            .validate()
+            .serializingDecodable([MentorRanking].self)
+            .value
+        return response
+    }
+    
+    // 멘티 메인화면 사용자 질문 목록
+    func fetchUserQuestions(userId: Int) async throws -> [Questions] {
+        let headers = try getAuthHeaders()
+
+        let response = try await AF.request("\(baseURL)/question/question", headers: headers)
+            .validate()
+            .serializingDecodable([Questions].self)
+            .value
+
+        return response
+            .filter { $0.user.id == userId }
+            .sorted { $0.createdAt > $1.createdAt } // 최신순
     }
     
     //게시글 상세
@@ -126,5 +178,8 @@ class APIService {
     
     struct LoginResponse: Codable {
         let access_token: String
+        let role: String
+        let name: String
+        let userId: Int
     }
 }
