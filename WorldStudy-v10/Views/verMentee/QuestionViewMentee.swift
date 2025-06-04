@@ -64,57 +64,59 @@ struct QuestionViewMentee: View {
                         .padding(.vertical, 4)
                     }
                 }
+            }
                 
                 //            .navigationTitle("게시판")
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("질문하기") {
-                            showingCreateQuestionSheet = true
-                        }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("질문하기") {
+                        showingCreateQuestionSheet = true
                     }
                 }
-                .onAppear {
-                    Task {
-                        await viewModel.fetchQuestions()
-                    }
+            }
+            .onAppear {
+                Task {
+                    await viewModel.fetchQuestions()
                 }
-                .fullScreenCover(isPresented: $showingCreateQuestionSheet) {
-                    CreateQuestionView(
-                        title: $newQuestionTitle,
-                        content: $newQuestionContent,
-                        isPresented: $showingCreateQuestionSheet,
-                        isCreating: $isCreatingQuestion,
-                        errorMessage: $createQuestionError,
-                        onSubmit: {selectedImage in
-                            Task {
-                                isCreatingQuestion = true
-                                do {
-                                    let result = try await APIService.shared.createQuestion(
-                                        title: newQuestionTitle,
-                                        content: newQuestionContent,
-                                        image: nil
-                                    )
-                                    if result {
-                                        await viewModel.fetchQuestions()
-                                        newQuestionTitle = ""
-                                        newQuestionContent = ""
-                                        showingCreateQuestionSheet = false
-                                    } else {
-                                        createQuestionError = "질문 등록 실패"
-                                    }
-                                } catch {
-                                    createQuestionError = "오류: \(error.localizedDescription)"
+            }
+            .fullScreenCover(isPresented: $showingCreateQuestionSheet) {
+                CreateQuestionView(
+                    title: $newQuestionTitle,
+                    content: $newQuestionContent,
+                    isPresented: $showingCreateQuestionSheet,
+                    isCreating: $isCreatingQuestion,
+                    errorMessage: $createQuestionError,
+                    onSubmit: { _ in isCreatingQuestion = true
+                        Task {
+                            isCreatingQuestion = true
+                            do {
+                                let result = try await APIService.shared.createQuestion(
+                                    title: newQuestionTitle,
+                                    content: newQuestionContent,
+                                    image: nil
+                                )
+                                if result {
+                                    await viewModel.fetchQuestions()
+                                    newQuestionTitle = ""
+                                    newQuestionContent = ""
+                                    showingCreateQuestionSheet = false
+                                } else {
+                                    createQuestionError = "질문 등록 실패"
                                 }
-                                isCreatingQuestion = false
+                            } catch {
+                                createQuestionError = "오류: \(error.localizedDescription)"
                             }
+                            isCreatingQuestion = false
                         }
-                    )
-                }
+                    }
+                )
             }
         }
     }
 }
-    #Preview {
-        QuestionViewMentee(viewModel: QBoardViewModel())
-        //isPresented: .constant(true), : 프리뷰에서 isPresented를 항상 true로 설정해주는 바인딩
-    }
+
+#Preview {
+    QuestionViewMentee(viewModel: QBoardViewModel())
+    //isPresented: .constant(true), : 프리뷰에서 isPresented를 항상 true로 설정해주는 바인딩
+}
+
