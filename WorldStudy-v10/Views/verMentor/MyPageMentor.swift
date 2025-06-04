@@ -18,21 +18,22 @@ struct MyPageMentor: View {
     let recentPosts: [Question] = [
         Question(
             id: 1,
-            title: "처음 쓴 글",
+            title: "테스트1",
             content: "내용1",
             createdAt: Date(),
-            deletedAt: nil,
+//            deletedAt: nil,
+            user: "멘티테스터",
             userId: 1,
             role: "멘티",
-            answers: [
-                Answer(
+            attachments: [
+                Attachment(
                     id: 1,
-                    content: "답변1",
-                    userId: "2",
-                    questionId: 1,
+                    fileName: "사진1",
+                    fileUrl: "sample",
+                    fileSize: 1,
+                    fileType: "사진",
                     createdAt: Date(),
-                    deletedAt: nil
-                )
+                    questionId: 1 )
                     ]),
     ]
     
