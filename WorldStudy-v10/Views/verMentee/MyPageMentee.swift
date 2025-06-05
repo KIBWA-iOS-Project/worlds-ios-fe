@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct MyPageMentee: View {
-    @State var name: String = "이서하"
     @State var email: String = "123@naver.com"
     @State private var showAlert = false
     @State private var showPasswordAlert = false
     @State private var newPassword: String = ""
+    
+    @ObservedObject var authViewModel: AuthViewModel
+    
     let recentPosts: [Question] = [
         Question(
             id: 1,
@@ -42,6 +44,8 @@ struct MyPageMentee: View {
     ]
     
     var body: some View {
+        let name = authViewModel.name ?? "사용자"
+        
         NavigationView {
             VStack(alignment: .leading, spacing: 2) {
                 Text("멘티")
@@ -65,13 +69,13 @@ struct MyPageMentee: View {
                         HStack {
                             Text("이메일")
                             Spacer()
-                            Text("\(email)")
+                            Text(email)
                                 .foregroundColor(.gray)
                         }
                         HStack {
                             Text("이름")
                             Spacer()
-                            Text("\(name)")
+                            Text(name)
                                 .foregroundColor(.gray)
                         }
                         HStack {
@@ -124,7 +128,7 @@ struct MyPageMentee: View {
 
     
 #Preview {
-    MyPageMentee()
+    MyPageMentee(authViewModel: AuthViewModel())
 }
 
 // .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

@@ -22,7 +22,7 @@ struct QuestionViewMentor: View {
             VStack(alignment: .leading, spacing: 2) {
                 
                 //화면이동-메인페이지 생성 후 변경
-                NavigationLink(destination: MyPageMentee(), isActive: $goToMyPageMenteeView) {
+                NavigationLink(destination: MyPageMentee(authViewModel: AuthViewModel()), isActive: $goToMyPageMenteeView) {
                     EmptyView()
                 }
                 .hidden()

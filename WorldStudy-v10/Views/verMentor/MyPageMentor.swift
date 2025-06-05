@@ -10,11 +10,15 @@ import SwiftUI
 struct MyPageMentor: View {
     @State var rank: Int = 0
     @State var answer_count: Int = 0
-    @State var name: String = "이멘토"
+    
     @State var email: String = "123@naver.com"
     @State private var showAlert = false
     @State private var showPasswordAlert = false
     @State private var newPassword: String = ""
+    
+    @StateObject private var rankingViewModel = RankingViewModel()
+    @ObservedObject var authViewModel: AuthViewModel
+    
     let recentPosts: [Question] = [
         Question(
             id: 1,
@@ -44,6 +48,8 @@ struct MyPageMentor: View {
     ]
     
     var body: some View {
+        let name = authViewModel.name ?? "사용자"
+        
         NavigationView {
             VStack(alignment: .leading, spacing: 2) {
                 Text("멘토")
@@ -79,13 +85,13 @@ struct MyPageMentor: View {
                         HStack {
                             Text("이메일")
                             Spacer()
-                            Text("\(email)")
+                            Text(email)
                                 .foregroundColor(.gray)
                         }
                         HStack {
                             Text("이름")
                             Spacer()
-                            Text("\(name)")
+                            Text(name)
                                 .foregroundColor(.gray)
                         }
                         HStack {
@@ -133,13 +139,24 @@ struct MyPageMentor: View {
                 ).frame(width: 0, height: 0)
             }
         }
+        //랭킹 보여주기
+        .onAppear {
+            rankingViewModel.loadRankings()
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                if let index = rankingViewModel.rankings.firstIndex(where: { $0.name == name }) {
+                    rank = index + 1
+                    answer_count = rankingViewModel.rankings[index].count
+                }
+            }
+        }
     }
 }
 
 
     
 #Preview {
-    MyPageMentor()
+    MyPageMentor(authViewModel: AuthViewModel())
 }
 
 // .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
