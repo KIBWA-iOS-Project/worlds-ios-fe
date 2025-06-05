@@ -7,9 +7,10 @@
 
 import Foundation
 
-struct User: Codable, Identifiable {
+struct User: Codable, Identifiable, Hashable, Equatable {
     let id: Int
     let email: String?
-    let password: String
+    let password: String?
     let name: String
+    let role: String?
 }

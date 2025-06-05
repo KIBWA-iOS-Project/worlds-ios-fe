@@ -14,9 +14,9 @@ struct Question: Codable, Identifiable, Hashable {
     let content: String
     let createdAt: Date
 //    let deletedAt: Date?
-    let user: String
+    let user: User
     let userId: Int
-    let role: String
+    let role: String?
     
     let attachments: [Attachment]?
 }

@@ -22,7 +22,13 @@ struct MyPageMentor: View {
             content: "내용1",
             createdAt: Date(),
 //            deletedAt: nil,
-            user: "멘티테스터",
+            user: User(
+                        id: 1,
+                        email: "mentee@example.com",
+                        password: "password123", // 실제로는 안 써도 됨 (목업 데이터니까)
+                        name: "멘티테스터",
+                        role: "멘티"
+                    ),
             userId: 1,
             role: "멘티",
             attachments: [

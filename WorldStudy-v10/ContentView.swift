@@ -43,7 +43,7 @@ struct ContentView: View {
                                 Image(systemName: "bubble.left.and.bubble.right.fill")
                                 Text("커뮤니티")
                             }
-                        MyPageMentor()
+                        MyPageMentee()
                             .tabItem {
                                 Image(systemName: "person.crop.circle")
                                 Text("마이페이지")

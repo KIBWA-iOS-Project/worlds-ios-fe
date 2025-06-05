@@ -11,7 +11,7 @@ import UIKit
 
 class APIService {
     static let shared = APIService()
-    let baseURL = "http://72.155.72.12"
+    let baseURL = "http://localhost:3000"
     enum APIError: Error {
         case missingToken
     }
@@ -80,15 +80,21 @@ class APIService {
     }
     
     //게시판 글 목록
-    func fetchQuestions() async throws -> [Question] { //[테이블]
+    func fetchQuestions() async throws -> [Question] {
         let headers = try getAuthHeaders()
-        
-        //Alamofire로 /question API에 GET 요청을 보내고, 응답을 [Question]으로 디코딩
-        let response = try await AF.request("\(baseURL)/question", headers: headers) //headers는 인증역할
-            .serializingDecodable([Question].self)
+
+        let data = try await AF.request("\(baseURL)/question/question", headers: headers)
+            .validate()
+            .serializingData()
             .value
-        
-        return response
+
+        let decoder = JSONDecoder()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        decoder.dateDecodingStrategy = .formatted(formatter)
+
+        return try decoder.decode([Question].self, from: data)
     }
     
     //게시글 상세
@@ -117,7 +123,7 @@ class APIService {
 //    }
     func createQuestion(title: String, content: String, image: UIImage?) async throws -> Bool {
         let headers = try getAuthHeaders()
-        let url = "\(baseURL)/question"
+        let url = "\(baseURL)/question/question"
 
         if let image = image, let imageData = image.jpegData(compressionQuality: 0.8) {
             //이미지까지 전송
