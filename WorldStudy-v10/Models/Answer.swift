@@ -11,10 +11,10 @@ import Foundation
 struct Answer: Codable, Identifiable, Hashable {
     let id: Int
     let content: String
-    let userId: String
+    let userId: Int
     let questionId: Int
     let createdAt: Date
-    let deletedAt: Date?
+//    let deletedAt: Date?
 }
 
 struct MentorRanking: Identifiable, Codable {
