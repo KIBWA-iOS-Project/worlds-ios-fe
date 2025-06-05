@@ -101,26 +101,12 @@ class APIService {
     func fethQuestionDetail(questionId: Int) async throws -> Question? {
         let headers = try getAuthHeaders()
         
-        let response = try await AF.request("\(baseURL)/question/\(questionId)", headers: headers)
+        let response = try await AF.request("\(baseURL)/question/question/\(questionId)", headers: headers)
             .serializingDecodable(Question.self)
             .value
         return response
     }
     
-   //글 작성
-    
-//    func createQuestion(title: String, content: String, token: String) async throws -> Bool {
-//        let params = ["title": title, "content": content, "createdAt": Date().description]
-//        let headers = try getAuthHeaders()
-//        
-//        let response = await AF.request("\(baseURL)/question", method: .post, parameters: params, encoding: JSONEncoding.default, headers: headers)
-//            .validate()
-//            .serializingData() //->왜 serializingDecodable안썻는지: 서버 응답안받아도돼서. 그냥 성공하면 업로드 되고 끝나면 되니까
-//        // 응답 데이터를 Data 형식으로 받음 (JSON을 직접 디코딩 안 함)
-//            .response // Alamofire.AFDataResponse<Data> 타입의 전체 응답을 받음
-//        
-//                return response.error == nil
-//    }
     func createQuestion(title: String, content: String, image: UIImage?) async throws -> Bool {
         let headers = try getAuthHeaders()
         let url = "\(baseURL)/question/question"
@@ -165,7 +151,7 @@ class APIService {
         let params = ["content": content]
         let headers = try getAuthHeaders()
         
-        let answer = try await AF.request("\(baseURL)/question/\(questionId)/answer", method: .post, parameters: params, encoding: JSONEncoding.default, headers: headers)
+        let answer = try await AF.request("\(baseURL)/answer/question/\(questionId)/answer", method: .post, parameters: params, encoding: JSONEncoding.default, headers: headers)
             .validate()
             .serializingDecodable(Answer.self)
             .value
@@ -176,7 +162,7 @@ class APIService {
     func fetchAnswers(questionId: Int) async throws -> [Answer] {
         let headers = try getAuthHeaders()
         
-        let response = try await AF.request("\(baseURL)/question/\(questionId)/answer", headers: headers)
+        let response = try await AF.request("\(baseURL)/answer/question/\(questionId)/answer", headers: headers)
             .serializingDecodable([Answer].self)
             .value
         
