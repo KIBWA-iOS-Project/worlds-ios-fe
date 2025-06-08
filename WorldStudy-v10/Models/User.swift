@@ -12,5 +12,5 @@ struct User: Codable, Identifiable, Hashable, Equatable {
     let email: String?
     let password: String?
     let name: String
-    let role: String?
+    let role: String
 }
