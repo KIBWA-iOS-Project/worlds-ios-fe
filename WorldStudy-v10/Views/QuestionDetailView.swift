@@ -25,7 +25,7 @@ struct QuestionDetailView: View {
                 
                 HStack {
                     Text("작성일: \(question.createdAt.formatted())")
-                    Text("작성자: \(question.userId)")
+                    Text("작성자: \(question.user.name)")
                 }
                 .font(.subheadline)
                 .foregroundColor(.gray)
@@ -83,14 +83,6 @@ struct QuestionDetailView: View {
                     answer.append(newAnswer)
                 }
             }
-            
-            
-            //            .sheet(isPresented: $goToCreateAnswerView) {
-            //                CreateAnswerView (
-            //                    userId: currentUserId,
-            //                    onSubmit: { createAnswer in
-            //                        answeranswerVM.postAnswer(newAnswer, for: question.id)
-            //            }
         }
         .padding(.bottom, 20)
         .onAppear {
