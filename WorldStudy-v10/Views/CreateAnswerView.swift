@@ -59,7 +59,8 @@ struct CreateAnswerView: View {
                             onSubmit(newAnswer)
                             dismiss()
                         } catch {
-                            errorMessage = "답변 등록 실패: \(error.localizedDescription)"
+                            errorMessage = "답변은 멘토만 작성 가능합니다"
+//                            errorMessage = "답변 등록 실패: \(error.localizedDescription)"
                         }
                     }
                 }) {
