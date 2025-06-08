@@ -24,8 +24,9 @@ struct QuestionDetailView: View {
                     .padding(.top, 50)
                 
                 HStack {
-                    Text("작성일: \(question.createdAt.formatted())")
-                    Text("작성자: \(question.user.name)")
+                    Text("작성일: \(question.createdAt)")
+//                    Text("작성자: \(question.user?.name)")     // 작성자: (optional)name 으로 출력됨
+                    Text("작성자: \(question.user?.name ?? "알 수 없는 사용자")")
                 }
                 .font(.subheadline)
                 .foregroundColor(.gray)
@@ -68,8 +69,12 @@ struct QuestionDetailView: View {
             
             //멘티일땐 "답변은 멘토만 작성 가능합니다" 메시지 띄우기
             Button(action: {
+//                if authViewModel.role == "멘티" {
+//                    showRoleAlert = true
+//                } else {
                 goToCreateAnswerView = true
-            }) {
+            })
+            {
                 Text("답변 작성하기")
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -78,12 +83,19 @@ struct QuestionDetailView: View {
                     .cornerRadius(10)
                     .padding(.horizontal)
             }
-            .sheet(isPresented: $goToCreateAnswerView) {
-                CreateAnswerView(question: question) { newAnswer in
-                    answer.append(newAnswer)
-                }
+
+//                .alert("답변은 멘토만 작성 가능합니다.", isPresented: $showRoleAlert) {
+//                        Button("확인", role: .cancel) { }
+//                    }
+                .sheet(isPresented: $goToCreateAnswerView) {
+                    CreateAnswerView(question: question) { newAnswer in
+                        answer.append(newAnswer)
             }
         }
+    }
+        
+        
+        
         .padding(.bottom, 20)
         .onAppear {
             Task {
