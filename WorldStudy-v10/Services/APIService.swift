@@ -169,6 +169,24 @@ class APIService {
         return response
     }
     
+    //내가 쓴 댓글 조회
+    func fetchMyAnswers() async throws -> [Answer] {
+        let headers = try getAuthHeaders()
+
+        let decoder = JSONDecoder()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        decoder.dateDecodingStrategy = .formatted(formatter)
+
+        let answers = try await AF.request("\(baseURL)/answer/my/answers", headers: headers)
+            .validate()
+            .serializingDecodable([Answer].self, decoder: decoder)
+            .value
+
+        return answers
+    }
+    
     struct LoginResponse: Codable {
         let access_token: String
         let role: String
