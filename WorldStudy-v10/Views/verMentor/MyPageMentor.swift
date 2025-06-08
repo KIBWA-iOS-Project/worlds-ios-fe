@@ -19,33 +19,8 @@ struct MyPageMentor: View {
     @StateObject private var rankingViewModel = RankingViewModel()
     @ObservedObject var authViewModel: AuthViewModel
     
-    let recentPosts: [Question] = [
-        Question(
-            id: 1,
-            title: "테스트1",
-            content: "내용1",
-            createdAt: Date(),
-//            deletedAt: nil,
-            user: User(
-                        id: 1,
-                        email: "mentee@example.com",
-                        password: "password123", // 실제로는 안 써도 됨 (목업 데이터니까)
-                        name: "멘티테스터",
-                        role: "멘티"
-                    ),
-            userId: 1,
-            role: "멘티",
-            attachments: [
-                Attachment(
-                    id: 1,
-                    fileName: "사진1",
-                    fileUrl: "sample",
-                    fileSize: 1,
-                    fileType: "사진",
-                    createdAt: Date(),
-                    questionId: 1 )
-                    ]),
-    ]
+    let recentPosts: [Question] = []
+    @State private var myAnswers: [Answer] = []
     
     var body: some View {
         let name = authViewModel.name ?? "사용자"
@@ -103,21 +78,21 @@ struct MyPageMentor: View {
                                 Text("재설정")
                                     .foregroundColor(.blue)
                             }
-                            
-//                            .alert("비밀번호 변경", isPresented: $showAlert) {
-//                                Button("OK", action:{})
-//                            } message: {
-//                                Text("새로운 비밀번호를 입력해주세요.")
-//                                //비밀번호 재설정 : UIkit(alert+텍스트필드) 추가 해야함
-//                            }
                         }
                     }
                     //섹션 안에서만 스크롤 되게 수정해야함
                     Section(header: Text("내가 도와준 질문")) {
-                        ForEach(recentPosts) { post in
-                            NavigationLink(destination: QuestionDetailView(question: post)) {
-                                Text(post.title)
-                                
+                        ForEach(myAnswers, id: \.id) { answer in
+                            if let question = answer.question {
+                                NavigationLink(destination: QuestionDetailView(question: question)) {
+                                    VStack(alignment: .leading) {
+                                        Text(question.title)
+                                            .font(.body)
+                                        Text("내 답변: \(answer.content)")
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
+                                    }
+                                }
                             }
                         }
                     }
@@ -147,6 +122,13 @@ struct MyPageMentor: View {
                 if let index = rankingViewModel.rankings.firstIndex(where: { $0.name == name }) {
                     rank = index + 1
                     answer_count = rankingViewModel.rankings[index].count
+                }
+            }
+            Task {
+                do {
+                    self.myAnswers = try await APIService.shared.fetchMyAnswers()
+                } catch {
+                    print("내 답변 불러오기 실패: \(error)")
                 }
             }
         }
