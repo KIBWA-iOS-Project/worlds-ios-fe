@@ -12,6 +12,7 @@ struct Attachment: Codable, Identifiable, Equatable, Hashable {
     let fileUrl: String
     let fileSize: Int
     let fileType: String
-    let createdAt: Date
+    let createdAt: String
     let questionId: Int
+    let url: String //
 }

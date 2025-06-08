@@ -10,8 +10,8 @@ import SwiftUI
 
 struct QuestionDetailView: View {
     let question: Question
-    //    let answer: [Answer] //!!!!!!   퀘스쳔 모델에서 분리해서 다시 코드 확인 필!!!!!
     @State var answer: [Answer] = []
+    @State var attatchmentImage: [Attachment] = []
     
     @State private var goToCreateAnswerView = false
     
@@ -33,8 +33,27 @@ struct QuestionDetailView: View {
                 
                 Divider()
                 
+                
                 Text(question.content)
                     .font(.body)
+                
+//                if let attachments = question.attachments, !attachments.isEmpty {
+//                        VStack(alignment: .leading, spacing: 10) {
+//                            Text("첨부파일")
+//                                .font(.headline)
+//                                .padding(.top)
+//
+//                            ForEach(attachments) { attachment in
+//                                if let url = URL(string: attachment.url) {
+//                                    Link(destination: url) {
+//                                        Text(url.lastPathComponent)
+//                                            .underline()
+//                                            .foregroundColor(.blue)
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
             }
             .padding()
             

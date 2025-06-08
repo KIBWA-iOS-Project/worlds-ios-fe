@@ -12,9 +12,9 @@ struct Question: Codable, Identifiable, Hashable {
     let id: Int
     let title: String
     let content: String
-    let createdAt: Date
+    let createdAt: String
 //    let deletedAt: Date?
-    let user: User
+    let user: User?
     let userId: Int
     let role: String?
     
