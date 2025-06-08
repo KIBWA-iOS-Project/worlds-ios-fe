@@ -15,33 +15,8 @@ struct MyPageMentee: View {
     
     @ObservedObject var authViewModel: AuthViewModel
     
-    let recentPosts: [Question] = [
-        Question(
-            id: 1,
-            title: "처음 쓴 글",
-            content: "내용1",
-            createdAt: Date(),
-//            deletedAt: nil,
-            user: User(
-                        id: 1,
-                        email: "mentee@example.com",
-                        password: "password123", // 실제로는 안 써도 됨 (목업 데이터니까)
-                        name: "멘티테스터",
-                        role: "멘티"
-                    ),
-            userId: 1,
-            role: "멘티",
-            attachments: [
-                Attachment(
-                    id: 1,
-                    fileName: "사진1",
-                    fileUrl: "sample",
-                    fileSize: 1,
-                    fileType: "사진",
-                    createdAt: Date(),
-                    questionId: 1 )
-                    ]),
-    ]
+    let recentPosts: [Question] = []
+    @State private var myQuestions: [Question] = []
     
     var body: some View {
         let name = authViewModel.name ?? "사용자"
@@ -98,7 +73,7 @@ struct MyPageMentee: View {
                     }
                     //섹션 안에서만 스크롤 되게 수정해야함
                     Section(header: Text("나의 질문")) {
-                        ForEach(recentPosts) { post in
+                        ForEach(myQuestions) { post in
                             NavigationLink(destination: QuestionDetailView(question: post)) {
                                 Text(post.title)
                                 
@@ -121,6 +96,15 @@ struct MyPageMentee: View {
                         }
                     )
                 ).frame(width: 0, height: 0)
+            }
+        }
+        .onAppear{
+            Task {
+                do {
+                    self.myQuestions = try await APIService.shared.fetchMyQuestions()
+                } catch {
+                    print("내 질문 불러오기 실패: \(error)")
+                }
             }
         }
     }
