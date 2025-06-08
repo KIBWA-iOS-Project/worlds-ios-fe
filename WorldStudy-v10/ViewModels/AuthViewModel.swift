@@ -15,6 +15,7 @@ class AuthViewModel: ObservableObject {
     @Published var loginError: String?
     @Published var signupError: String?
     @Published var role: String?
+    @Published var email: String?
 
     private let tokenKey = "jwt_token"
 
@@ -40,10 +41,12 @@ class AuthViewModel: ObservableObject {
                         self.role = result.role
                         self.name = result.name
                         self.isLoggedIn = true
+                        self.email = email
                         UserDefaults.standard.set(result.token, forKey: self.tokenKey)
                         UserDefaults.standard.set(result.role, forKey: "role")
                         UserDefaults.standard.set(result.name, forKey: "name")
                         UserDefaults.standard.set(result.userId, forKey: "userId")
+                        UserDefaults.standard.set(email, forKey: "email")
                     }
                 } else {
                     await MainActor.run {
