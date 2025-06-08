@@ -27,7 +27,7 @@ struct Questions: Identifiable, Codable {
     let content: String
     let userId: Int
     let user: QuestionUser
-    let createdAt: String
+    let createdAt: String // <- 이게 오류해결
 }
 
 struct QuestionUser: Codable {

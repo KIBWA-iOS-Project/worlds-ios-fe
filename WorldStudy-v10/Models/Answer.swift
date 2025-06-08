@@ -13,8 +13,9 @@ struct Answer: Codable, Identifiable, Hashable {
     let content: String
     let userId: Int
     let questionId: Int
-    let createdAt: Date
+    let createdAt: String //ㅋㅋㅋㅋㅋㅋzzz이넘이..문제엿어 ㅡㅡ;;!!
 //    let deletedAt: Date?
+    let user: User?
 }
 
 struct MentorRanking: Identifiable, Codable {

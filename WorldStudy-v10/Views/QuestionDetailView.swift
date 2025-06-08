@@ -52,7 +52,7 @@ struct QuestionDetailView: View {
                     } else {
                         ForEach(answer) { answer in
                             VStack(alignment: .leading, spacing: 8) {
-                                Text(answer.userId)
+                                Text("작성자 ID: \(answer.userId)")
                                     .font(.subheadline)
                                     .bold()
                                 Text(answer.content)
