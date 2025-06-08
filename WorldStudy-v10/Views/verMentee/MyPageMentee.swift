@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct MyPageMentee: View {
-    @State var email: String = "123@naver.com"
     @State private var showAlert = false
     @State private var showPasswordAlert = false
     @State private var newPassword: String = ""
@@ -20,6 +19,7 @@ struct MyPageMentee: View {
     
     var body: some View {
         let name = authViewModel.name ?? "사용자"
+        let email = authViewModel.email ?? "이메일 없음"
         
         NavigationView {
             VStack(alignment: .leading, spacing: 2) {

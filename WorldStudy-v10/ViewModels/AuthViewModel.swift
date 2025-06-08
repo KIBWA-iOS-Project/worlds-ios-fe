@@ -41,12 +41,12 @@ class AuthViewModel: ObservableObject {
                         self.role = result.role
                         self.name = result.name
                         self.isLoggedIn = true
-                        self.email = email
+                        self.email = result.email
                         UserDefaults.standard.set(result.token, forKey: self.tokenKey)
                         UserDefaults.standard.set(result.role, forKey: "role")
                         UserDefaults.standard.set(result.name, forKey: "name")
                         UserDefaults.standard.set(result.userId, forKey: "userId")
-                        UserDefaults.standard.set(email, forKey: "email")
+                        UserDefaults.standard.set(result.email, forKey: "email")
                     }
                 } else {
                     await MainActor.run {

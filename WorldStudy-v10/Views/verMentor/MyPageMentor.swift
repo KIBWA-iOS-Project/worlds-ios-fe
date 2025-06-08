@@ -11,7 +11,6 @@ struct MyPageMentor: View {
     @State var rank: Int = 0
     @State var answer_count: Int = 0
     
-    @State var email: String = "123@naver.com"
     @State private var showAlert = false
     @State private var showPasswordAlert = false
     @State private var newPassword: String = ""
@@ -24,6 +23,7 @@ struct MyPageMentor: View {
     
     var body: some View {
         let name = authViewModel.name ?? "사용자"
+        let email = authViewModel.email ?? "이메일 없음"
         
         NavigationView {
             VStack(alignment: .leading, spacing: 2) {

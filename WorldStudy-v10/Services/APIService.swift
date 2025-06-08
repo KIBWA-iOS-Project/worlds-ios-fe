@@ -44,7 +44,7 @@ class APIService {
     }
 
     // 로그인
-    func login(email: String, password: String) async throws -> (token: String, role: String, name: String, userId: Int)? {
+    func login(email: String, password: String) async throws -> (token: String, role: String, name: String, userId: Int, email: String)? {
         let params = ["email": email, "password": password]
 
         let response = try await AF.request("\(baseURL)/auth/login", method: .post, parameters: params, encoding: JSONEncoding.default)
@@ -52,7 +52,7 @@ class APIService {
             .serializingDecodable(LoginResponse.self)
             .value
 
-        return (response.access_token, response.role, response.name, response.userId)
+        return (response.access_token, response.role, response.name, response.userId, response.email)
     }
     
     // 멘토 랭킹
@@ -210,5 +210,6 @@ class APIService {
         let role: String
         let name: String
         let userId: Int
+        let email: String
     }
 }
