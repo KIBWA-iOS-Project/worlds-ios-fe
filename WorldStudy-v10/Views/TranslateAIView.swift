@@ -1,13 +1,11 @@
-//
-//  TranslateAIView.swift
-//  WorldStudy-v10
-//
-//  Created by 이다은 on 6/5/25.
-//
 
 import SwiftUI
+import Vision
+import PhotosUI
 import Translation
 
+
+// OCR 인식된 텍스트를 저장하는 모델
 struct RecognizedText: Identifiable {
     let id = UUID()
     let string: String // 인식된 텍스트
@@ -22,8 +20,8 @@ struct TranslatedText: Identifiable {
     let boundingBox: CGRect // 번역된 텍스트의 박스 좌표
 }
 
-struct TranslateAIView: View {
-    
+struct AIHelper: View {
+    // 카메라 뷰모델
     @State private var isShowingImagePicker = false
     @State private var selectedImage: UIImage?
     @State private var imagePickerSourceType: UIImagePickerController.SourceType = .photoLibrary
@@ -34,44 +32,61 @@ struct TranslateAIView: View {
     @State private var translatedTexts: [TranslatedText] = []
     // 오버레이 표시 여부
     @State private var showOverlay: Bool = false
+    // OCR 처리된 이미지를 저장
+    @State private var processedImage: UIImage? // OCR 처리된 이미지를 저장
     @State private var showTranslation: Bool = false // 번역 표시 여부
     @State private var sourceLanguage: Locale.Language = Locale.Language(identifier: "ko") // 원본 언어
     @State private var targetLanguage: Locale.Language = Locale.Language(identifier: "en") // 번역 언어
     @State private var isTranslating: Bool = false // 번역 중 여부
     @State private var translationConfiguration: TranslationSession.Configuration?
     
+    
+    // 뷰 본문
     var body: some View {
-        // 언어 선택 UI
-        // OCR 인식된 텍스트가 있으면 언어 선택 UI 표시
-        //        if !recognizedTexts.isEmpty{
-        VStack{
-            Text("번역 언어 설정")
-                .font(.headline)
-                .padding(.top)
-            HStack {
-                Picker("Source", selection: $sourceLanguage) {
-                    Text("한국어").tag(Locale.Language(identifier: "ko"))
-                    Text("영어").tag(Locale.Language(identifier: "en"))
-                }
-                .pickerStyle(MenuPickerStyle())
-                Image(systemName: "arrow.right")
+        VStack {
+            // 텍스트 인식하기 -> 맨위에 언어설정 UI
+            if !recognizedTexts.isEmpty {
+                VStack {
+                    Text("번역 언어 설정")
+                        .font(.headline)
+                        .padding(.top)
+                    
+                    HStack {
+                        VStack {
+                            Text("원본 언어")
+                                .font(.caption)
+                            Picker("Source", selection: $sourceLanguage) {
+                                Text("한국어").tag(Locale.Language(identifier: "ko"))
+                            }
+                            .pickerStyle(MenuPickerStyle())
+                        }
+                        
+                        Image(systemName: "arrow.right")
+                            .padding(.horizontal)
+                        
+                        VStack {
+                            Text("번역 언어")
+                                .font(.caption)
+                            Picker("Target", selection: $targetLanguage) {
+                                Text("한국어").tag(Locale.Language(identifier: "ko"))
+                                Text("영어").tag(Locale.Language(identifier: "en"))
+                                Text("중국어").tag(Locale.Language(identifier: "zh-Hans"))
+                            }
+                            .pickerStyle(MenuPickerStyle())
+                        }
+                    }
                     .padding(.horizontal)
-                Picker("Target", selection: $targetLanguage) {
-                    Text("한국어").tag(Locale.Language(identifier: "ko"))
-                    Text("영어").tag(Locale.Language(identifier: "en"))
                 }
-                .pickerStyle(MenuPickerStyle())
             }
-            .padding(.horizontal)
-            .padding(.bottom)
             
-            // 사진 촬영 버튼
-            HStack {
+            //초기화면
+            ZStack {
                 Button {
                     print("camera")
-                } label: {
+                }
+                label: {
                     VStack(alignment: .leading, spacing: 10) {
-                        Menu("사진 촬영하기") {
+                        Menu("사진 선택") {
                             Button("Camera") {
                                 imagePickerSourceType = .camera
                                 isShowingImagePicker = true
@@ -79,77 +94,232 @@ struct TranslateAIView: View {
                             Button("Photo") {
                                 imagePickerSourceType = .photoLibrary
                                 isShowingImagePicker = true
-                            } 
+                            }
                         }
-                        .font(.system(size: 20))
+                        .font(.headline)
                         .foregroundStyle(.black)
                         .fontWeight(.semibold)
                     }
                     .padding()
-                    .frame(width: 150, height: 70)
+                    .frame(width: 110, height: 55)
                     .background(
-                        RoundedRectangle(cornerRadius: 16)
+                        RoundedRectangle(cornerRadius: 10)
                             .stroke(Color.main, lineWidth: 3)
-                            .background(RoundedRectangle(cornerRadius: 16).fill(Color.white)))
+                            .background(RoundedRectangle(cornerRadius: 10).fill(Color.white)))
+                }
+                .sheet(isPresented: $isShowingImagePicker) {
+                    ImagePickerView(selectedImage: $selectedImage, sourceType: imagePickerSourceType)
+                }
+                if let image = selectedImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 200)
+                        .cornerRadius(8)
                 }
                 
-                // 번역 버튼 - OCR 인식된 텍스트가 있으면 번역 버튼 표시
-                //                    if !recognizedTexts.isEmpty {
-                Button(action: {
-                    translateTexts()
-                }) {
-                    HStack {
-                        // 번역 중 표시
-                        if isTranslating {
-                            ProgressView().scaleEffect(0.8)
+                if showOverlay, let image = selectedImage {
+                    GeometryReader { geometry in
+                        ZStack {
+                            // 이미지 표시
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: geometry.size.width)
+                            // 번역이 되었으면 번역된 텍스트 그리기
+                            
+                            if showTranslation {
+                                ForEach(translatedTexts, id: \.id) { text in
+                                    Text(text.translatedText)
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundColor(.blue)
+                                        .background(Color.white.opacity(0.8))
+                                        .position(
+                                            x: text.boundingBox.midX * geometry.size.width,
+                                            y: text.boundingBox.midY * geometry.size.height
+                                        )
+                                }
+                            } else {
+                                // 아니면 OCR 인식된 텍스트 그리기
+                                ForEach(recognizedTexts, id: \.id) { text in
+                                    Text(text.string)
+                                        .font(.system(size: 14, weight: .medium))
+                                        .foregroundColor(.red)
+                                        .background(Color.white.opacity(0.7))
+                                        .position(
+                                            x: text.boundingBox.midX * geometry.size.width,
+                                            y: text.boundingBox.midY * geometry.size.height
+                                        )
+                                }
+                            }
                         }
-                        Text(isTranslating ? "번역 중..." : "번역하기")
-                            .font(.system(size: 20))
-                            .foregroundStyle(.black)
-                            .fontWeight(.semibold)
                     }
-                    .frame(width: 150, height: 70)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.main, lineWidth: 3)
-                            .background(RoundedRectangle(cornerRadius: 16).fill(Color.white))
-                    )
                 }
-                .disabled(isTranslating)
-                //                        Button {
-                //                            print("camera")
-                //                        } label: {
-                //                            VStack(alignment: .leading, spacing: 10) {
-                //                                Text("번역하기")
-                //                                    .font(.system(size: 20))
-                //                                    .foregroundStyle(.black)
-                //                                    .fontWeight(.semibold)
-                //                            }
-                //                            .padding()
-                //                            .frame(width: 150, height: 70)
-                //                            .background(
-                //                                RoundedRectangle(cornerRadius: 16)
-                //                                    .stroke(Color.main, lineWidth: 3)
-                //                                    .background(RoundedRectangle(cornerRadius: 16).fill(Color.white)))
-                //                        }
-                //                    }
-                
             }
-            if let image = selectedImage {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 200)
-                            .cornerRadius(8)
+            
+            
+            
+            HStack {
+                // OCR 인식 버튼
+                Button(action: {
+                    // 카메라 뷰모델에서 캡쳐된 이미지가 있으면 이미지 처리
+                    if let image = selectedImage {
+                        // 메모리 최적화: autoreleasepool 사용
+                        autoreleasepool {
+                            // 이미지 크기 조정 시도
+                            let imageToProcess = resizeImage(image, targetSize: CGSize(width: 1024, height: 1024)) ?? image
+                            
+                            // 전처리 시도
+                            if let processedImage = preprocessImage(imageToProcess) {
+                                // 이미지 처리
+                                recognizeText(from: processedImage)
+                            } else {
+                                // 이미지 처리
+                                recognizeText(from: imageToProcess)
+                            }
+                        }
                     }
+                }) {
+                    Text("사진 읽기")
+                        .font(.headline)
+                        .foregroundStyle(.black)
+                        .fontWeight(.semibold)
+                }
+                .disabled(selectedImage == nil)
+                .padding()
+                .frame(width: 110, height: 55)
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.main, lineWidth: 3)
+                        .background(RoundedRectangle(cornerRadius: 10).fill(Color.white)))
+                
+                
+                // OCR 인식된 텍스트가 있으면 번역 버튼 표시
+                if !recognizedTexts.isEmpty {
+                    // 번역 버튼
+                    Button(action: {
+                        translateTexts()
+                    }) {
+                        HStack {
+                            // 번역 중 표시
+                            if isTranslating {
+                                ProgressView()
+                                    .scaleEffect(0.8)
+                            }
+                            Text(isTranslating ? "번역 중..." : "번역하기")
+                        }
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.main)
+                        .cornerRadius(10)
+                    }
+                    .disabled(isTranslating)
+                }
+                
+                // 카메라 뷰모델에서 캡쳐된 이미지가 있으면 오버레이 표시 버튼 표시
+                if selectedImage != nil {
+                    if !showOverlay {
+                        // 오버레이가 꺼져 있을 때만 버튼 표시 (오버레이 보기 버튼)
+                        Menu("다시 선택") {
+                            Button("Camera") {
+                                imagePickerSourceType = .camera
+                                isShowingImagePicker = true
+                            }
+                            Button("Photo") {
+                                imagePickerSourceType = .photoLibrary
+                                isShowingImagePicker = true
+                            }
+                        }
+                        .padding()
+                        .frame(width: 110, height: 55)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.main, lineWidth: 3)
+                                .background(RoundedRectangle(cornerRadius: 10).fill(Color.white)))
+                        .font(.headline)
+                        .foregroundStyle(.black)
+                        .fontWeight(.semibold)
+                        .sheet(isPresented: $isShowingImagePicker) {
+                            ImagePickerView(selectedImage: $selectedImage, sourceType: imagePickerSourceType)
+                        }
+                    }
+                    // showOverlay == true 일 때는 버튼 안보임
+                }
+                
+                // OCR 인식된 이미지가 있으면 원본으로 버튼 표시
+                if processedImage != nil {
+                    // 원본으로 버튼
+                    Button(action: {
+                        cleanupMemory()
+                    }) {
+                        Text("돌아가기")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color.main)
+                            .cornerRadius(10)
+                        
+//                            .frame(width: 150, height: 70)
+//                            .background(
+//                                RoundedRectangle(cornerRadius: 16)
+//                                    .stroke(Color.main, lineWidth: 3)
+//                                    .background(RoundedRectangle(cornerRadius: 16).fill(Color.white)))
+//                            .font(.system(size: 20))
+//                            .foregroundStyle(.black)
+//                            .fontWeight(.semibold)
+                    }
+                }
+            }
+            .padding()
+            
+            // 스크롤 뷰
+            ScrollView {
+                // 번역된 텍스트가 있으면 번역된 텍스트 표시
+                VStack(alignment: .leading, spacing: 8) {
+                    if showTranslation && !translatedTexts.isEmpty {
+                        ForEach(translatedTexts, id: \.id) { text in
+                            VStack(alignment: .leading, spacing: 4) {
+                                HStack {
+                                    Text("원문:")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    Text(text.originalText)
+                                        .font(.body)
+                                }
+                                HStack {
+                                    Text("번역:")
+                                        .font(.caption)
+                                        .foregroundColor(.blue)
+                                    Text(text.translatedText)
+                                        .font(.body)
+                                        .foregroundColor(.blue)
+                                }
+                                Divider()
+                            }
+                            .padding(.horizontal)
+                        }
+                    } else {
+                        ForEach(recognizedTexts, id: \.id) { text in
+                            Text(text.string)
+                                .padding(.horizontal)
+                        }
+                    }
+                }
+            }
+            .frame(height: 200)
+            .background(Color(.systemGray6))
+            .cornerRadius(12)
+            .padding()
         }
-        .sheet(isPresented: $isShowingImagePicker) {
-            ImagePickerView(selectedImage: $selectedImage, sourceType: imagePickerSourceType)
+        // TranslationSession을 위한 translationTask modifier 추가
+        .translationTask(translationConfiguration) { session in
+            await performTranslations(using: session)
         }
-        //        }
     }
     
     
+    //***********translate***********
     // 번역 함수 수정
     private func translateTexts() {
         // OCR 인식된 텍스트가 있으면 번역 수행
@@ -225,8 +395,151 @@ struct TranslateAIView: View {
             }
         }
     }
+    // OCR 인식 함수
+    private func recognizeText(from image: UIImage) {
+        guard let cgImage = image.cgImage else { return }
+        
+        // 메모리 최적화: autoreleasepool 사용
+        autoreleasepool {
+            // OCR 인식 요청 생성
+            let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+            // OCR 인식 요청 생성
+            let request = VNRecognizeTextRequest { request, error in
+                guard let observations = request.results as? [VNRecognizedTextObservation],
+                      error == nil else {
+                    return
+                }
+                // OCR 인식 결과 처리
+                let recognizedTexts = observations.compactMap { observation -> RecognizedText? in
+                    // 상위 3개의 인식 결과를 확인하고 신뢰도가 높은 결과 선택
+                    let candidates = observation.topCandidates(3)
+                    // 신뢰도가 50% 이상인 결과만 사용
+                    guard let topCandidate = candidates.first,
+                          topCandidate.confidence > 0.5 else { return nil } // 신뢰도가 50% 이상인 결과만 사용
+                    
+                    // 박스 좌표 변환
+                    let boundingBox = observation.boundingBox
+                    // 박스 좌표 변환
+                    let transformedBox = CGRect(
+                        x: boundingBox.minX,
+                        y: 1 - boundingBox.maxY,
+                        width: boundingBox.width,
+                        height: boundingBox.height
+                    )
+                    
+                    return RecognizedText(
+                        string: topCandidate.string,
+                        boundingBox: transformedBox
+                    )
+                }
+                
+                DispatchQueue.main.async {
+                    self.recognizedTexts = recognizedTexts
+                    self.translatedTexts = []
+                    self.showOverlay = true
+                    self.showTranslation = false
+                    
+                    // 메모리 최적화: autoreleasepool로 이미지 처리 감싸기
+                    autoreleasepool {
+                        // 더 작은 크기로 OCR 처리된 이미지 생성 (메모리 절약)
+                        let maxSize: CGFloat = 1024
+                        let scaleFactor = min(maxSize / image.size.width, maxSize / image.size.height, 1.0)
+                        let scaledSize = CGSize(
+                            width: image.size.width * scaleFactor,
+                            height: image.size.height * scaleFactor
+                        )
+                        // 이미지 컨텍스트 생성
+                        UIGraphicsBeginImageContextWithOptions(scaledSize, false, 0.0)
+                        image.draw(in: CGRect(origin: .zero, size: scaledSize))
+                        // 이미지 컨텍스트 생성
+                        let context = UIGraphicsGetCurrentContext()
+                        context?.setStrokeColor(UIColor.red.cgColor)
+                        context?.setLineWidth(2.0)
+                        
+                        // 인식된 텍스트 영역에 박스 그리기 (스케일된 크기에 맞춤)
+                        for text in recognizedTexts {
+                            let rect = CGRect(
+                                x: text.boundingBox.minX * scaledSize.width,
+                                y: text.boundingBox.minY * scaledSize.height,
+                                width: text.boundingBox.width * scaledSize.width,
+                                height: text.boundingBox.height * scaledSize.height
+                            )
+                            context?.stroke(rect)
+                        }
+                        // 이미지 컨텍스트 생성
+                        if let processedImage = UIGraphicsGetImageFromCurrentImageContext() {
+                            self.processedImage = processedImage
+                        }
+                        // 이미지 컨텍스트 종료
+                        UIGraphicsEndImageContext()
+                    }
+                }
+            }
+            
+            // 한글 인식을 위한 설정
+            request.recognitionLevel = .accurate
+            request.recognitionLanguages = ["ko-KR", "en-US"] // 한글과 영어 인식
+            request.usesLanguageCorrection = true // 언어 교정 사용
+            request.customWords = ["한글", "영어", "숫자"] // 자주 사용되는 단어 추가
+            
+            do {
+                try requestHandler.perform([request])
+            } catch {
+                print("텍스트 인식 중 오류 발생: \(error)")
+            }
+        }
+    }
+    
+    // 이미지 전처리 함수 - 메모리 최적화
+    private func preprocessImage(_ image: UIImage) -> UIImage? {
+        return autoreleasepool {
+            guard let cgImage = image.cgImage else { return nil }
+            
+            let context = CIContext(options: [.useSoftwareRenderer: false]) // GPU 사용으로 메모리 절약
+            let ciImage = CIImage(cgImage: cgImage)
+            
+            // 이미지 대비 향상
+            let filter = CIFilter(name: "CIColorControls")
+            filter?.setValue(ciImage, forKey: kCIInputImageKey)
+            filter?.setValue(1.1, forKey: kCIInputContrastKey) // 대비 증가
+            filter?.setValue(0.0, forKey: kCIInputBrightnessKey) // 밝기 조정
+            filter?.setValue(1.0, forKey: kCIInputSaturationKey) // 채도 유지
+            
+            guard let outputImage = filter?.outputImage,
+                  let processedCGImage = context.createCGImage(outputImage, from: outputImage.extent) else {
+                return nil
+            }
+            
+            return UIImage(cgImage: processedCGImage)
+        }
+    }
+    
+    // 이미지 크기 조정 함수 - 메모리 최적화
+    private func resizeImage(_ image: UIImage, targetSize: CGSize) -> UIImage? {
+        return autoreleasepool {
+            let size = image.size
+            
+            let widthRatio  = targetSize.width  / size.width
+            let heightRatio = targetSize.height / size.height
+            
+            let ratio = min(widthRatio, heightRatio)
+            let newSize = CGSize(width: size.width * ratio, height: size.height * ratio)
+            
+            let renderer = UIGraphicsImageRenderer(size: newSize)
+            return renderer.image { _ in
+                image.draw(in: CGRect(origin: .zero, size: newSize))
+            }
+        }
+    }
+    
+    private func cleanupMemory() {
+        processedImage = nil
+        recognizedTexts = []
+        translatedTexts = []
+        showOverlay = false
+        showTranslation = false
+    }
 }
 
-#Preview {
-    TranslateAIView()
-}
+
+
