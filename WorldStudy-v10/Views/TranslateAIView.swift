@@ -23,6 +23,11 @@ struct TranslatedText: Identifiable {
 }
 
 struct TranslateAIView: View {
+    
+    @State private var isShowingImagePicker = false
+    @State private var selectedImage: UIImage?
+    @State private var imagePickerSourceType: UIImagePickerController.SourceType = .photoLibrary
+    
     // OCR 인식된 텍스트를 저장하는 배열
     @State private var recognizedTexts: [RecognizedText] = []
     // 번역된 텍스트를 저장하는 배열
@@ -38,91 +43,112 @@ struct TranslateAIView: View {
     var body: some View {
         // 언어 선택 UI
         // OCR 인식된 텍스트가 있으면 언어 선택 UI 표시
-//        if !recognizedTexts.isEmpty{
-            VStack{
-                Text("번역 언어 설정")
-                    .font(.headline)
-                    .padding(.top)
-                HStack {
-                    Picker("Source", selection: $sourceLanguage) {
-                        Text("한국어").tag(Locale.Language(identifier: "ko"))
-                        Text("영어").tag(Locale.Language(identifier: "en"))
-                    }
-                    .pickerStyle(MenuPickerStyle())
-                    Image(systemName: "arrow.right")
-                        .padding(.horizontal)
-                    Picker("Target", selection: $targetLanguage) {
-                        Text("한국어").tag(Locale.Language(identifier: "ko"))
-                        Text("영어").tag(Locale.Language(identifier: "en"))
-                    }
-                    .pickerStyle(MenuPickerStyle())
+        //        if !recognizedTexts.isEmpty{
+        VStack{
+            Text("번역 언어 설정")
+                .font(.headline)
+                .padding(.top)
+            HStack {
+                Picker("Source", selection: $sourceLanguage) {
+                    Text("한국어").tag(Locale.Language(identifier: "ko"))
+                    Text("영어").tag(Locale.Language(identifier: "en"))
                 }
-                .padding(.horizontal)
-                .padding(.bottom)
-                
-                // 사진 촬영 버튼
-                HStack {
-                    Button {
-                        print("camera")
-                    } label: {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("사진 촬영하기")
-                                .font(.system(size: 20))
-                                .foregroundStyle(.black)
-                                .fontWeight(.semibold)
-                        }
-                        .padding()
-                        .frame(width: 150, height: 70)
-                        .background(
-                            RoundedRectangle(cornerRadius: 16)
-                                .stroke(Color.main, lineWidth: 3)
-                                .background(RoundedRectangle(cornerRadius: 16).fill(Color.white)))
-                    }
-                    
-                    // 번역 버튼 - OCR 인식된 텍스트가 있으면 번역 버튼 표시
-//                    if !recognizedTexts.isEmpty {
-                    Button(action: {
-                        translateTexts()
-                    }) {
-                        HStack {
-                            // 번역 중 표시
-                            if isTranslating {
-                                ProgressView().scaleEffect(0.8)
-                            }
-                            Text(isTranslating ? "번역 중..." : "번역하기")
-                                .font(.system(size: 20))
-                                .foregroundStyle(.black)
-                                .fontWeight(.semibold)
-                        }
-                        .frame(width: 150, height: 70)
-                        .background(
-                            RoundedRectangle(cornerRadius: 16)
-                                .stroke(Color.main, lineWidth: 3)
-                                .background(RoundedRectangle(cornerRadius: 16).fill(Color.white))
-                        )
-                    }
-                    .disabled(isTranslating)
-//                        Button {
-//                            print("camera")
-//                        } label: {
-//                            VStack(alignment: .leading, spacing: 10) {
-//                                Text("번역하기")
-//                                    .font(.system(size: 20))
-//                                    .foregroundStyle(.black)
-//                                    .fontWeight(.semibold)
-//                            }
-//                            .padding()
-//                            .frame(width: 150, height: 70)
-//                            .background(
-//                                RoundedRectangle(cornerRadius: 16)
-//                                    .stroke(Color.main, lineWidth: 3)
-//                                    .background(RoundedRectangle(cornerRadius: 16).fill(Color.white)))
-//                        }
-//                    }
+                .pickerStyle(MenuPickerStyle())
+                Image(systemName: "arrow.right")
+                    .padding(.horizontal)
+                Picker("Target", selection: $targetLanguage) {
+                    Text("한국어").tag(Locale.Language(identifier: "ko"))
+                    Text("영어").tag(Locale.Language(identifier: "en"))
                 }
+                .pickerStyle(MenuPickerStyle())
             }
-//        }
+            .padding(.horizontal)
+            .padding(.bottom)
+            
+            // 사진 촬영 버튼
+            HStack {
+                Button {
+                    print("camera")
+                } label: {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Menu("사진 촬영하기") {
+                            Button("Camera") {
+                                imagePickerSourceType = .camera
+                                isShowingImagePicker = true
+                            }
+                            Button("Photo") {
+                                imagePickerSourceType = .photoLibrary
+                                isShowingImagePicker = true
+                            } 
+                        }
+                        .font(.system(size: 20))
+                        .foregroundStyle(.black)
+                        .fontWeight(.semibold)
+                    }
+                    .padding()
+                    .frame(width: 150, height: 70)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.main, lineWidth: 3)
+                            .background(RoundedRectangle(cornerRadius: 16).fill(Color.white)))
+                }
+                
+                // 번역 버튼 - OCR 인식된 텍스트가 있으면 번역 버튼 표시
+                //                    if !recognizedTexts.isEmpty {
+                Button(action: {
+                    translateTexts()
+                }) {
+                    HStack {
+                        // 번역 중 표시
+                        if isTranslating {
+                            ProgressView().scaleEffect(0.8)
+                        }
+                        Text(isTranslating ? "번역 중..." : "번역하기")
+                            .font(.system(size: 20))
+                            .foregroundStyle(.black)
+                            .fontWeight(.semibold)
+                    }
+                    .frame(width: 150, height: 70)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.main, lineWidth: 3)
+                            .background(RoundedRectangle(cornerRadius: 16).fill(Color.white))
+                    )
+                }
+                .disabled(isTranslating)
+                //                        Button {
+                //                            print("camera")
+                //                        } label: {
+                //                            VStack(alignment: .leading, spacing: 10) {
+                //                                Text("번역하기")
+                //                                    .font(.system(size: 20))
+                //                                    .foregroundStyle(.black)
+                //                                    .fontWeight(.semibold)
+                //                            }
+                //                            .padding()
+                //                            .frame(width: 150, height: 70)
+                //                            .background(
+                //                                RoundedRectangle(cornerRadius: 16)
+                //                                    .stroke(Color.main, lineWidth: 3)
+                //                                    .background(RoundedRectangle(cornerRadius: 16).fill(Color.white)))
+                //                        }
+                //                    }
+                
+            }
+            if let image = selectedImage {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 200)
+                            .cornerRadius(8)
+                    }
+        }
+        .sheet(isPresented: $isShowingImagePicker) {
+            ImagePickerView(selectedImage: $selectedImage, sourceType: imagePickerSourceType)
+        }
+        //        }
     }
+    
     
     // 번역 함수 수정
     private func translateTexts() {
