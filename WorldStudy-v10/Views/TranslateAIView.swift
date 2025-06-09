@@ -20,7 +20,7 @@ struct TranslatedText: Identifiable {
     let boundingBox: CGRect // 번역된 텍스트의 박스 좌표
 }
 
-struct AIHelper: View {
+struct TranslateAIView: View {
     // 카메라 뷰모델
     @State private var isShowingImagePicker = false
     @State private var selectedImage: UIImage?
