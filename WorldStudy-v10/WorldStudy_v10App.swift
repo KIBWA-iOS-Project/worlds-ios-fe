@@ -11,7 +11,7 @@ import SwiftUI
 struct WorldStudy_v10App: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LaunchView()
         }
     }
 }
