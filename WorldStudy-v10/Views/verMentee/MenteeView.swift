@@ -73,7 +73,7 @@ struct MenteeView: View {
                     )
                     .padding(.top, -30)
                     
-                    NavigationLink(destination: HelpAiView()) { // 화면이동
+                    NavigationLink(destination: TranslateAIView()) { // 화면이동
                         HStack {
                             Image("helpai")
                                 .resizable()
