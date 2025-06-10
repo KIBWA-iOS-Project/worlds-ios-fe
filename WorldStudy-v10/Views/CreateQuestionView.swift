@@ -93,7 +93,7 @@ struct CreateQuestionView: View {
                         .fontWeight(.medium)
                         .padding()
                         .frame(width: 150)
-                        .background(Color("BackgroundColor2"))
+                        .background(Color("lightbrown"))
                         .cornerRadius(25)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25)

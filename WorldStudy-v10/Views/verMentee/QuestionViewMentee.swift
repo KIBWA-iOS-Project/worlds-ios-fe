@@ -30,7 +30,7 @@ struct QuestionViewMentee: View {
                 Image("logo")
                     .resizable()
                     .frame(width: 30, height: 18)
-                    .offset(x: -165, y: 10)
+                    .offset(x: -145, y: 10)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     
