@@ -18,29 +18,28 @@ struct CreateAnswerView: View {
     
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 16) {
                 Group {
-                    Text(question.title)
-                        .font(.headline)
-                        .foregroundColor(.gray)
-                    
                     Text("질문 내용")
                         .font(.caption)
                         .foregroundColor(.gray)
+                    
                     Text(question.content)
                         .font(.body)
-//                        .padding(.bottom, 20)
                 }
-                
-                Divider()
-                
+
                 Text("답변 하기")
                     .font(.title3)
                     .bold()
                 
                 TextEditor(text: $content)
                     .frame(height: 150)
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+                    .background(Color.white)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color("darkbrown"), lineWidth: 2)
+                    )
+                    .cornerRadius(10)
                 
                 if let error = errorMessage {
                     Text(error)
@@ -49,37 +48,52 @@ struct CreateAnswerView: View {
                 
                 Spacer()
                 
-                Button(action: {
-                    Task {
-                        do {
-                            let newAnswer = try await APIService.shared.createAnswer(
-                                questionId: question.id,
-                                content: content
-                            )
-                            onSubmit(newAnswer)
-                            dismiss()
-                        } catch {
-                            errorMessage = "답변은 멘토만 작성 가능합니다"
-//                            errorMessage = "답변 등록 실패: \(error.localizedDescription)"
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        Task {
+                            do {
+                                let newAnswer = try await APIService.shared.createAnswer(
+                                    questionId: question.id,
+                                    content: content
+                                )
+                                onSubmit(newAnswer)
+                                dismiss()
+                            } catch {
+                                errorMessage = "답변은 멘토만 작성 가능합니다"
+                            }
                         }
+                    }) {
+                        Text("작성 완료")
+                            .foregroundColor(.white)
+                            .fontWeight(.medium)
+                            .padding()
+                            .frame(width: 150)
+                            .background(Color("darkbrown"))
+                            .cornerRadius(25)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 25)
+                                    .stroke(Color.black, lineWidth: 0))
                     }
-                }) {
-                    Text("작성 완료")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                    .disabled(content.trimmingCharacters(in: .whitespaces).isEmpty)
+                    Spacer()
                 }
-                .disabled(content.trimmingCharacters(in: .whitespaces).isEmpty)
             }
             .padding()
-            .navigationTitle("답변 작성")
+            
+ 
+            
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("취소") {
                         dismiss()
                     }
+                }
+                ToolbarItem(placement: .principal) {
+                    Image("logo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 30, height: 18)
                 }
             }
         }

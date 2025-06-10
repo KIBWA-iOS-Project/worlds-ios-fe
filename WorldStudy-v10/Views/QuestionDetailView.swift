@@ -15,13 +15,15 @@ struct QuestionDetailView: View {
     
     @State private var goToCreateAnswerView = false
     
+    let backgroundColor = Color("BackgroundColor")
+    
     var body: some View {
         VStack(spacing:0) {
             VStack(alignment: .leading, spacing: 15) {
                 Text(question.title)
                     .font(.title)
                     .bold()
-                    .padding(.top, 50)
+                    .padding(.top, 10)
                 
                 HStack {
                     Text("작성일: \(question.createdAt)")
@@ -36,6 +38,7 @@ struct QuestionDetailView: View {
                 
                 Text(question.content)
                     .font(.body)
+                    .frame(height: 100)
                 
 //                if let attachments = question.attachments, !attachments.isEmpty {
 //                        VStack(alignment: .leading, spacing: 10) {
@@ -57,12 +60,18 @@ struct QuestionDetailView: View {
             }
             .padding()
             
-            Divider()
+            HStack(spacing: 5) {
+                Image("mentorIcon")
+                    .resizable()
+                    .frame(width: 40, height: 40)
+
+                Text("멘토들의 답변")
+                    .font(.title3)
+                    .bold()
+            }
+            .padding(.top, 10)
             
-            Text("멘토 답변")
-                .font(.title3)
-                .bold()
-                .padding(.top, 10)
+            Divider()
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 15) {
@@ -84,6 +93,7 @@ struct QuestionDetailView: View {
                 }
                 .padding()
             }
+            
             Spacer()
             
             //멘티일땐 "답변은 멘토만 작성 가능합니다" 메시지 띄우기
@@ -95,13 +105,18 @@ struct QuestionDetailView: View {
             })
             {
                 Text("답변 작성하기")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.blue)
                     .foregroundColor(.white)
-                    .cornerRadius(10)
-                    .padding(.horizontal)
+                    .fontWeight(.medium)
+                    .padding()
+                    .frame(width: 150)
+                    .background(Color("darkbrown"))
+                    .cornerRadius(25)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 25)
+                            .stroke(Color.black, lineWidth: 0))
+                
             }
+            .padding(.bottom, 20)
 
 //                .alert("답변은 멘토만 작성 가능합니다.", isPresented: $showRoleAlert) {
 //                        Button("확인", role: .cancel) { }
@@ -125,5 +140,6 @@ struct QuestionDetailView: View {
                 }
             }
         }
+        .background(backgroundColor.ignoresSafeArea())
     }
 }
