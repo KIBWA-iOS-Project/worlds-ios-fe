@@ -24,15 +24,17 @@ struct MenteeView: View {
                 VStack {
                     Text("\(role)")
                         .padding(.top, 150)
-                        .padding(.leading, -175)
+                        .padding(.leading, -170)
+                        .padding(.bottom, 30)
                         .foregroundStyle(.gray)
                     HStack {
                         Text("안녕하세요. \(name) 님")
                             .font(.system(size: 30))
                             .fontWeight(.heavy)
-                            .padding(.leading, 20)
-                        Image("together")
-                            .padding(.leading, -10)
+                        Image("icon")
+                            .resizable()
+                            .frame(width: 60, height: 60)
+                            .padding(.leading, 10)
                     }
                     .padding(.top, -40)
                     
@@ -68,10 +70,10 @@ struct MenteeView: View {
                     .frame(width: 350, height: 250)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.main, lineWidth: 3)
+                            .stroke(.lightbrown, lineWidth: 2)
                             .background(RoundedRectangle(cornerRadius: 16).fill(Color.white))
                     )
-                    .padding(.top, -30)
+                    .padding(.top, -10)
                     
                     NavigationLink(destination: TranslateAIView()) { // 화면이동
                         HStack {
@@ -88,7 +90,7 @@ struct MenteeView: View {
                         }
                         .padding()
                         .frame(width: 350, height: 80)
-                        .background(.black)
+                        .background(.darkbrown)
                         .cornerRadius(10)
                         .padding(.top, 30)
                         .padding(.bottom)
@@ -96,9 +98,9 @@ struct MenteeView: View {
                     
                     NavigationLink(destination: QuestionViewMentee(viewModel: QBoardViewModel())) { // 화면이동 수정!!
                         HStack {
-                            Image("mentor")
+                            Image("mentorIcon")
                                 .resizable()
-                                .frame(width: 40, height: 40)
+                                .frame(width: 45, height: 45)
                             Spacer()
                                 .overlay(
                                     Text("멘토들에게 질문하기")
@@ -109,7 +111,7 @@ struct MenteeView: View {
                         }
                         .padding()
                         .frame(width: 350, height: 80)
-                        .background(.black)
+                        .background(.lightbrown)
                         .cornerRadius(10)
                     }
                 }
