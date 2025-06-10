@@ -11,13 +11,13 @@ import Foundation
 class QuestionViewModel: ObservableObject {
     @Published var questions: [Questions] = []
     @Published var errorMessage: String?
-
+    
     func loadUserQuestions() {
         guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
             self.errorMessage = "유저 정보가 없습니다."
             return
         }
-
+        
         Task {
             do {
                 let userQuestions = try await APIService.shared.fetchUserQuestions(userId: userId)

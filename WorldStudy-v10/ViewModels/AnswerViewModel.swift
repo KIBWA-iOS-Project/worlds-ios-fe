@@ -21,7 +21,7 @@ class AnswerViewModel {
             print("댓글 목록 불러오기 실패: \(error)")
         }
     }
-  
+    
     //답변 등록
     func createAnswer(questionId: Int, content: String) async throws {
         let success = try await APIService.shared.createAnswer(questionId: questionId, content: content)
@@ -29,7 +29,7 @@ class AnswerViewModel {
         for answer in answer {
             print(answer.content)
         }
-
+        
         await fetchAnswers(questionId: questionId)
-       }
+    }
 }

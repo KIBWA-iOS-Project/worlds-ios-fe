@@ -155,4 +155,3 @@ struct MyPageMentor: View {
     MyPageMentor(authViewModel: AuthViewModel())
 }
 
-// .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

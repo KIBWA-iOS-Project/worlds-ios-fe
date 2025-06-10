@@ -28,13 +28,12 @@ struct QuestionViewMentee: View {
                 backgroundColor.ignoresSafeArea()
                 
                 Image("logo")
-                        .resizable()
-                        .frame(width: 30, height: 18)
-                        .offset(x: -165, y: 10)
+                    .resizable()
+                    .frame(width: 30, height: 18)
+                    .offset(x: -165, y: 10)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     
-                    //화면이동-메인페이지 생성 후 변경
                     NavigationLink(destination: MyPageMentee(authViewModel: AuthViewModel()), isActive: $goToMyPageMenteeView) {
                         EmptyView()
                     }

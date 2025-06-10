@@ -14,7 +14,6 @@ struct CreateQuestionView: View {
     @Binding var isCreating: Bool
     @Binding var errorMessage: String?
     @Environment(\.presentationMode) var presentationMode
-    //    @State private var goToQuestionView = false
     
     @State private var isShowingImagePicker = false
     @State private var selectedImage: UIImage?
@@ -25,10 +24,6 @@ struct CreateQuestionView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 16) {
-                //                NavigationLink(destination: QuestionView(), isActive: $goToQuestionView) {
-                //                                   EmptyView()
-                //                               }
-                //                               .hidden()
                 
                 Text("멘토에게 질문하기💬")
                     .font(.title)
@@ -42,7 +37,7 @@ struct CreateQuestionView: View {
                     .background(Color.white)
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color("mainColor"), lineWidth: 2)
+                            .stroke(Color("darkbrown"), lineWidth: 2)
                     )
                     .cornerRadius(10)
                     .padding(.horizontal)
@@ -75,7 +70,7 @@ struct CreateQuestionView: View {
                     .background(Color.white)
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color("mainColor"), lineWidth: 2)
+                            .stroke(Color("darkbrown"), lineWidth: 2)
                     )
                     .cornerRadius(10)
                     .padding(.horizontal)
@@ -125,11 +120,11 @@ struct CreateQuestionView: View {
                     }
                 }
                 ToolbarItem(placement: .principal) {
-                    Image("logo") 
+                    Image("logo")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 30, height: 18)
-                        
+                    
                 }
             }
             .sheet(isPresented: $isShowingImagePicker) {

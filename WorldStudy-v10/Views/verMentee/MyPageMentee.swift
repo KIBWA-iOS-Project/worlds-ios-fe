@@ -45,7 +45,7 @@ struct MyPageMentee: View {
                 }
                 .padding(.leading, 20)
                 .padding(.vertical, 15)
-            
+                
                 
                 
                 List {
@@ -118,9 +118,9 @@ struct MyPageMentee: View {
     }
 }
 
-    
+
 #Preview {
     MyPageMentee(authViewModel: AuthViewModel())
 }
 
-// .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+

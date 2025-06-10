@@ -16,9 +16,9 @@ class AuthViewModel: ObservableObject {
     @Published var signupError: String?
     @Published var role: String?
     @Published var email: String?
-
+    
     private let tokenKey = "jwt_token"
-
+    
     init() {
         // 앱 실행 시 저장된 값 불러오기
         if let savedToken = UserDefaults.standard.string(forKey: tokenKey) {
@@ -28,7 +28,7 @@ class AuthViewModel: ObservableObject {
             self.name = UserDefaults.standard.string(forKey: "name")
         }
     }
-
+    
     // 로그인 요청
     func login(email: String, password: String) async {
         Task {
@@ -60,7 +60,7 @@ class AuthViewModel: ObservableObject {
             }
         }
     }
-
+    
     // 회원가입 요청
     func signup(email: String, password: String, name: String, role: String) async {
         Task {
@@ -84,7 +84,7 @@ class AuthViewModel: ObservableObject {
             }
         }
     }
-
+    
     // 로그아웃 처리
     func logout() {
         self.token = nil

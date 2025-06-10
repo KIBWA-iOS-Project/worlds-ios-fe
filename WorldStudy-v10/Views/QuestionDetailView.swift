@@ -4,7 +4,7 @@
 //
 //  Created by 이서하 on 5/23/25.
 //
-//  댓글 쓰기는 또 다른 뷰에서 => 멘토만 가능하게
+// 
 
 import SwiftUI
 
@@ -27,7 +27,7 @@ struct QuestionDetailView: View {
                 
                 HStack {
                     Text("작성일: \(question.createdAt)")
-//                    Text("작성자: \(question.user?.name)")     // 작성자: (optional)name 으로 출력됨
+                    //                    Text("작성자: \(question.user?.name)")     // 작성자: (optional)name 으로 출력됨
                     Text("작성자: \(question.user?.name ?? "알 수 없는 사용자")")
                 }
                 .font(.subheadline)
@@ -40,23 +40,23 @@ struct QuestionDetailView: View {
                     .font(.body)
                     .frame(height: 100)
                 
-//                if let attachments = question.attachments, !attachments.isEmpty {
-//                        VStack(alignment: .leading, spacing: 10) {
-//                            Text("첨부파일")
-//                                .font(.headline)
-//                                .padding(.top)
-//
-//                            ForEach(attachments) { attachment in
-//                                if let url = URL(string: attachment.url) {
-//                                    Link(destination: url) {
-//                                        Text(url.lastPathComponent)
-//                                            .underline()
-//                                            .foregroundColor(.blue)
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
+                //                if let attachments = question.attachments, !attachments.isEmpty {
+                //                        VStack(alignment: .leading, spacing: 10) {
+                //                            Text("첨부파일")
+                //                                .font(.headline)
+                //                                .padding(.top)
+                //
+                //                            ForEach(attachments) { attachment in
+                //                                if let url = URL(string: attachment.url) {
+                //                                    Link(destination: url) {
+                //                                        Text(url.lastPathComponent)
+                //                                            .underline()
+                //                                            .foregroundColor(.blue)
+                //                                    }
+                //                                }
+                //                            }
+                //                        }
+                //                    }
             }
             .padding()
             
@@ -64,7 +64,7 @@ struct QuestionDetailView: View {
                 Image("mentorIcon")
                     .resizable()
                     .frame(width: 40, height: 40)
-
+                
                 Text("멘토들의 답변")
                     .font(.title3)
                     .bold()
@@ -98,9 +98,9 @@ struct QuestionDetailView: View {
             
             //멘티일땐 "답변은 멘토만 작성 가능합니다" 메시지 띄우기
             Button(action: {
-//                if authViewModel.role == "멘티" {
-//                    showRoleAlert = true
-//                } else {
+                //                if authViewModel.role == "멘티" {
+                //                    showRoleAlert = true
+                //                } else {
                 goToCreateAnswerView = true
             })
             {
@@ -117,16 +117,13 @@ struct QuestionDetailView: View {
                 
             }
             .padding(.bottom, 20)
-
-//                .alert("답변은 멘토만 작성 가능합니다.", isPresented: $showRoleAlert) {
-//                        Button("확인", role: .cancel) { }
-//                    }
-                .sheet(isPresented: $goToCreateAnswerView) {
-                    CreateAnswerView(question: question) { newAnswer in
-                        answer.append(newAnswer)
+            
+            .sheet(isPresented: $goToCreateAnswerView) {
+                CreateAnswerView(question: question) { newAnswer in
+                    answer.append(newAnswer)
+                }
             }
         }
-    }
         
         
         

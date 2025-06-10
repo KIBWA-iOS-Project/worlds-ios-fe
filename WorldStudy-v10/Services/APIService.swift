@@ -30,28 +30,28 @@ class APIService {
     // 회원가입
     func signup(email: String, password: String, name: String, role: String) async throws -> Bool {
         let params = ["email": email, "password": password, "name": name, "role": role]
-
+        
         let response = try await AF.request("\(baseURL)/auth/signup", method: .post, parameters: params, encoding: JSONEncoding.default)
             .validate()
             .serializingData()
             .response
-
+        
         if let error = response.error {
             print("Signup error: \(error.localizedDescription)")
             return false
         }
         return true
     }
-
+    
     // 로그인
     func login(email: String, password: String) async throws -> (token: String, role: String, name: String, userId: Int, email: String)? {
         let params = ["email": email, "password": password]
-
+        
         let response = try await AF.request("\(baseURL)/auth/login", method: .post, parameters: params, encoding: JSONEncoding.default)
             .validate()
             .serializingDecodable(LoginResponse.self)
             .value
-
+        
         return (response.access_token, response.role, response.name, response.userId, response.email)
     }
     
@@ -68,12 +68,12 @@ class APIService {
     // 멘티 메인화면 사용자 질문 목록
     func fetchUserQuestions(userId: Int) async throws -> [Questions] {
         let headers = try getAuthHeaders()
-
+        
         let response = try await AF.request("\(baseURL)/question/question", headers: headers)
             .validate()
             .serializingDecodable([Questions].self)
             .value
-
+        
         return response
             .filter { $0.user.id == userId }
             .sorted { $0.createdAt > $1.createdAt } // 최신순
@@ -82,18 +82,18 @@ class APIService {
     //게시판 글 목록
     func fetchQuestions() async throws -> [Question] {
         let headers = try getAuthHeaders()
-
+        
         let data = try await AF.request("\(baseURL)/question/question", headers: headers)
             .validate()
             .serializingData()
             .value
-
+        
         let decoder = JSONDecoder()
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         formatter.locale = Locale(identifier: "en_US_POSIX")
         decoder.dateDecodingStrategy = .formatted(formatter)
-
+        
         return try decoder.decode([Question].self, from: data)
     }
     
@@ -110,7 +110,7 @@ class APIService {
     func createQuestion(title: String, content: String, image: UIImage?) async throws -> Bool {
         let headers = try getAuthHeaders()
         let url = "\(baseURL)/question/question"
-
+        
         if let image = image, let imageData = image.jpegData(compressionQuality: 0.8) {
             //이미지까지 전송
             return try await withCheckedThrowingContinuation { continuation in
@@ -145,7 +145,7 @@ class APIService {
         }
     }
     
-
+    
     //댓글 작성
     func createAnswer(questionId: Int, content: String) async throws -> Answer {
         let params = ["content": content]
@@ -172,36 +172,36 @@ class APIService {
     //내가 쓴 댓글 조회(멘토)
     func fetchMyAnswers() async throws -> [Answer] {
         let headers = try getAuthHeaders()
-
+        
         let decoder = JSONDecoder()
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         formatter.locale = Locale(identifier: "en_US_POSIX")
         decoder.dateDecodingStrategy = .formatted(formatter)
-
+        
         let answers = try await AF.request("\(baseURL)/answer/my/answers", headers: headers)
             .validate()
             .serializingDecodable([Answer].self, decoder: decoder)
             .value
-
+        
         return answers
     }
     
     //내가 쓴 질문 조회(멘티)
     func fetchMyQuestions() async throws -> [Question] {
         let headers = try getAuthHeaders()
-
+        
         let decoder = JSONDecoder()
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         formatter.locale = Locale(identifier: "en_US_POSIX")
         decoder.dateDecodingStrategy = .formatted(formatter)
-
+        
         let questions = try await AF.request("\(baseURL)/question/my/questions", headers: headers)
             .validate()
             .serializingDecodable([Question].self, decoder: decoder)
             .value
-
+        
         return questions
     }
     

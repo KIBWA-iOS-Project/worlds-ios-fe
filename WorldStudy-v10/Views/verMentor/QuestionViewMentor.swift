@@ -31,7 +31,6 @@ struct QuestionViewMentor: View {
                 
                 VStack(alignment: .leading, spacing: 2) {
                     
-                    //화면이동-메인페이지 생성 후 변경
                     NavigationLink(destination: MyPageMentee(authViewModel: AuthViewModel()), isActive: $goToMyPageMenteeView) {
                         EmptyView()
                     }
@@ -74,7 +73,7 @@ struct QuestionViewMentor: View {
                     .listRowBackground(Color.brown.opacity(0.2))
                     
                 }
-
+                
                 .toolbar {
                 }
                 .onAppear {
@@ -86,7 +85,7 @@ struct QuestionViewMentor: View {
         }
     }
 }
-    #Preview {
-        QuestionViewMentor(viewModel: QBoardViewModel())
-        //isPresented: .constant(true), : 프리뷰에서 isPresented를 항상 true로 설정해주는 바인딩
-    }
+#Preview {
+    QuestionViewMentor(viewModel: QBoardViewModel())
+    //isPresented: .constant(true), : 프리뷰에서 isPresented를 항상 true로 설정해주는 바인딩
+}

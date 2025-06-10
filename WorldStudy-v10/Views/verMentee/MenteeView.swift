@@ -75,7 +75,7 @@ struct MenteeView: View {
                     )
                     .padding(.top, -10)
                     
-                    NavigationLink(destination: TranslateAIView()) { // 화면이동
+                    NavigationLink(destination: TranslateAIView()) {
                         HStack {
                             Image("helpai")
                                 .resizable()
@@ -96,7 +96,7 @@ struct MenteeView: View {
                         .padding(.bottom)
                     }
                     
-                    NavigationLink(destination: QuestionViewMentee(viewModel: QBoardViewModel())) { // 화면이동 수정!!
+                    NavigationLink(destination: QuestionViewMentee(viewModel: QBoardViewModel())) {
                         HStack {
                             Image("mentorIcon")
                                 .resizable()

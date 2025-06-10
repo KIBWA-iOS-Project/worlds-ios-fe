@@ -16,20 +16,20 @@ struct AuthView: View {
     @State private var role = ""
     @State private var isSignup = false
     @State private var selectedRole: String? = nil
-
+    
     var body: some View {
         ZStack {
             backgroundColor2.ignoresSafeArea()
-
+            
             VStack(spacing: 200) {
                 Spacer().frame(height: 60)
-
+                
                 if isSignup {
                     signupSection
                 } else {
                     loginSection
                 }
-
+                
                 Text(isSignup ? (viewModel.signupError ?? "") : (viewModel.loginError ?? ""))
                     .foregroundColor(.red)
                     .opacity((isSignup ? viewModel.signupError : viewModel.loginError) == nil ? 0 : 1)
@@ -38,20 +38,20 @@ struct AuthView: View {
             .padding(.horizontal, 30)
         }
     }
-
+    
     var loginSection: some View {
         VStack(spacing: 16) {
             Text("로그인 하기")
                 .font(.title)
                 .bold()
                 .frame(maxWidth: .infinity, alignment: .leading)
-
+            
             TextField("이메일 주소", text: $email)
                 .customAuthField()
-
+            
             SecureField("비밀번호", text: $password)
                 .customAuthField()
-
+            
             Button("로그인") {
                 Task {
                     await viewModel.login(email: email, password: password)
@@ -62,7 +62,7 @@ struct AuthView: View {
             .background(Color(red: 0.4627, green: 0.6902, blue: 0.9686))
             .foregroundColor(.white)
             .cornerRadius(10)
-
+            
             Button("회원가입하기") {
                 isSignup = true
             }
@@ -70,7 +70,7 @@ struct AuthView: View {
             .font(.footnote)
         }
     }
-
+    
     var signupSection: some View {
         VStack(spacing: 16) {
             Text("회원가입 하기")
@@ -84,11 +84,11 @@ struct AuthView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .foregroundColor(.black)
                 .padding(.top, -30)
-
+            
             HStack(spacing: 20) {
                 roleCard(role: "멘토", image: "mentorUser", isSelected: selectedRole == "멘토")
                     .onTapGesture { selectedRole = "멘토" }
-
+                
                 roleCard(role: "멘티", image: "menteeUser", isSelected: selectedRole == "멘티")
                     .onTapGesture { selectedRole = "멘티" }
             }
@@ -102,13 +102,13 @@ struct AuthView: View {
                     .customAuthField()
             }
             .padding(.bottom)
-
+            
             Button("회원가입") {
                 guard let selected = selectedRole else {
                     viewModel.signupError = "역할을 선택해주세요."
                     return
                 }
-
+                
                 Task {
                     print("회원가입: \(email), \(password), \(name), 역할: \(selected)")
                     await viewModel.signup(email: email, password: password, name: name, role: selected)
@@ -122,7 +122,7 @@ struct AuthView: View {
             .background(Color(red: 0.4627, green: 0.6902, blue: 0.9686))
             .foregroundColor(.white)
             .cornerRadius(10)
-
+            
             Button("로그인하기") {
                 isSignup = false
             }
@@ -130,7 +130,7 @@ struct AuthView: View {
             .font(.footnote)
         }
     }
-
+    
     func roleCard(role: String, image: String, isSelected: Bool) -> some View {
         VStack {
             Image(image)

@@ -38,9 +38,9 @@ struct TranslateAIView: View {
     @State private var targetLanguage: Locale.Language = Locale.Language(identifier: "en") // 번역 언어
     @State private var isTranslating: Bool = false // 번역 중 여부
     @State private var translationConfiguration: TranslationSession.Configuration?
-
+    
     @State private var isShowingFullScreen = false
-
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -59,12 +59,12 @@ struct TranslateAIView: View {
                                 .padding(.bottom, 20)
                         }
                     }
-
+                    
                     // 언어 설정 선택
                     if !recognizedTexts.isEmpty {
                         languagePickerSection
                     }
-
+                    
                     // 이미지 + 오버레이
                     ZStack {
                         // 선택한 이미지 표시
@@ -82,9 +82,9 @@ struct TranslateAIView: View {
                             RoundedRectangle(cornerRadius: 12)
                                 .stroke(Color.gray.opacity(0.3), lineWidth: 2)
                                 .frame(height: 200)
-                                .overlay(Text("이미지를 선택해주세요").foregroundColor(.gray))
+                                .overlay(Text("이미지를 선택해주세요").foregroundColor(Color("darkbrown")))
                         }
-
+                        
                         // 오버레이 텍스트 표시
                         if showOverlay, let image = selectedImage {
                             GeometryReader { geometry in
@@ -130,7 +130,7 @@ struct TranslateAIView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .ignoresSafeArea()
-
+                                    
                                     if showOverlay {
                                         if showTranslation {
                                             ForEach(translatedTexts) { text in
@@ -170,7 +170,7 @@ struct TranslateAIView: View {
                     }
                     .navigationBarTitleDisplayMode(.inline)
                     .navigationBarHidden(true)
-
+                    
                     // 버튼 영역
                     HStack(spacing: 16) {
                         Menu {
@@ -194,7 +194,7 @@ struct TranslateAIView: View {
                                 )
                                 .cornerRadius(8)
                         }
-
+                        
                         Button("사진 읽기") {
                             if let image = selectedImage {
                                 let imageToProcess = resizeImage(image, targetSize: CGSize(width: 1024, height: 1024)) ?? image
@@ -203,7 +203,7 @@ struct TranslateAIView: View {
                         }
                         .buttonStyle(MainButtonStyle())
                         .disabled(selectedImage == nil)
-
+                        
                         if !recognizedTexts.isEmpty {
                             Button(isTranslating ? "번역 중..." : "번역하기") {
                                 translateTexts()
@@ -212,7 +212,7 @@ struct TranslateAIView: View {
                             .disabled(isTranslating)
                         }
                     }
-
+                    
                     // 결과 텍스트 박스
                     ScrollView {
                         VStack(alignment: .leading, spacing: 8) {
@@ -247,7 +247,7 @@ struct TranslateAIView: View {
             }
         }
     }
-
+    
     // 언어 선택 picker
     var languagePickerSection: some View {
         VStack(spacing: 10) {
@@ -257,9 +257,9 @@ struct TranslateAIView: View {
                     Text("한국어").tag(Locale.Language(identifier: "ko"))
                 }
                 .pickerStyle(.menu)
-
+                
                 Image(systemName: "arrow.right")
-
+                
                 Picker("대상", selection: $targetLanguage) {
                     Text("영어").tag(Locale.Language(identifier: "en"))
                     Text("중국어").tag(Locale.Language(identifier: "zh-Hans"))
@@ -271,7 +271,7 @@ struct TranslateAIView: View {
             }
         }
     }
-
+    
     // 번역 시작
     private func translateTexts() {
         guard !recognizedTexts.isEmpty else { return }
@@ -283,16 +283,16 @@ struct TranslateAIView: View {
             translationConfiguration?.invalidate()
         }
     }
-
+    
     // 실제 번역 실행
     private func performTranslations(using session: TranslationSession) async {
         do {
             let requests = recognizedTexts.enumerated().map { index, text in
                 TranslationSession.Request(sourceText: text.string, clientIdentifier: "\(index)")
             }
-
+            
             var tempTranslatedTexts: [TranslatedText] = []
-
+            
             for try await response in session.translate(batch: requests) {
                 if let clientId = response.clientIdentifier,
                    let index = Int(clientId),
@@ -305,7 +305,7 @@ struct TranslateAIView: View {
                     tempTranslatedTexts.append(translatedText)
                 }
             }
-
+            
             await MainActor.run {
                 self.translatedTexts = tempTranslatedTexts
                 self.isTranslating = false
@@ -323,7 +323,7 @@ struct TranslateAIView: View {
             }
         }
     }
-
+    
     // OCR 텍스트 인식
     private func recognizeText(from image: UIImage) {
         guard let cgImage = image.cgImage else { return }
@@ -347,7 +347,7 @@ struct TranslateAIView: View {
         request.recognitionLanguages = ["ko-KR", "en-US"]
         try? handler.perform([request])
     }
-
+    
     // 이미지 리사이즈
     private func resizeImage(_ image: UIImage, targetSize: CGSize) -> UIImage? {
         let renderer = UIGraphicsImageRenderer(size: targetSize)
@@ -355,7 +355,7 @@ struct TranslateAIView: View {
             image.draw(in: CGRect(origin: .zero, size: targetSize))
         }
     }
-
+    
     // 상태 초기화
     private func cleanupMemory() {
         processedImage = nil

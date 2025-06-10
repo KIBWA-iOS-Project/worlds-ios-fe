@@ -13,7 +13,7 @@ struct HelpTip: Tip {
     var title: Text {
         Text("더 정확한 인식을 위해 이렇게 촬영해주세요!")
     }
-
+    
     var message: Text? {
         Text("1. 텍스트가 또렷하게 보이도록 흔들리지 않게 촬영 해주세요!\n")
         + Text("2. 문서 전체가 프레임 안에 잘 들어오도록 해주세요!")
@@ -22,8 +22,8 @@ struct HelpTip: Tip {
 
 struct HelpAiView: View {
     init() {
-            try? Tips.configure() // 2. TipKit 설정
-        }
+        try? Tips.configure() // 2. TipKit 설정
+    }
     
     let backgroundColor = Color("BackgroundColor")
     private let helpTip = HelpTip() // 팁 인스턴스

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LaunchView: View {
     @State private var isActive = false
-
+    
     var body: some View {
         if isActive {
             ContentView() // 이미 정의된 ContentView 사용
