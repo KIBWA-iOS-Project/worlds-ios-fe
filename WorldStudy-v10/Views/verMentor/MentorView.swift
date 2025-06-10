@@ -24,16 +24,18 @@ struct MentorView: View {
                 VStack {
                     Text("\(role)")
                         .padding(.top, 150)
-                        .padding(.leading, -175)
+                        .padding(.leading, -170)
+                        .padding(.bottom, 30)
                         .foregroundColor(.gray)
                     
                     HStack {
                         Text("안녕하세요. \(name) 님")
                             .font(.system(size: 30))
                             .fontWeight(.heavy)
-                            .padding(.leading, 20)
-                        Image("together")
-                            .padding(.leading, -10)
+                        Image("mentorIcon")
+                            .resizable()
+                            .frame(width: 60, height: 60)
+                            .padding(.leading, 10)
                     }
                     .padding(.top, -40)
                     
@@ -59,7 +61,7 @@ struct MentorView: View {
                         }
                         .padding()
                         .frame(width: 350, height: 110)
-                        .background(Color.black)
+                        .background(.darkbrown)
                         .cornerRadius(10)
                         .padding(.vertical)
                     }
@@ -107,12 +109,12 @@ struct MentorView: View {
         .frame(width: 350)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.main, lineWidth: 3)
+                .stroke(.lightbrown, lineWidth: 2)
                 .background(
                     RoundedRectangle(cornerRadius: 16).fill(Color.white)
                 )
         )
-        .padding(.top, -30)
+        .padding(.top, -10)
     }
     
     func rankIcon(for index: Int) -> String {
