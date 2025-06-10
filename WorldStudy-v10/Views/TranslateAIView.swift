@@ -118,6 +118,8 @@ struct TranslateAIView: View {
                         }
                     }
                     .frame(height: 250)
+                    .padding(.top, -20)
+                    
                     
                     // 전체 화면 이미지 보기
                     .fullScreenCover(isPresented: $isShowingFullScreen) {
@@ -166,6 +168,8 @@ struct TranslateAIView: View {
                             }
                         }
                     }
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationBarHidden(true)
 
                     // 버튼 영역
                     HStack(spacing: 16) {
