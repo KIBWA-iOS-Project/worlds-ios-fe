@@ -14,21 +14,21 @@ struct CreateQuestionView: View {
     @Binding var isCreating: Bool
     @Binding var errorMessage: String?
     @Environment(\.presentationMode) var presentationMode
-//    @State private var goToQuestionView = false
+    //    @State private var goToQuestionView = false
     
     @State private var isShowingImagePicker = false
     @State private var selectedImage: UIImage?
     @State private var imagePickerSourceType: UIImagePickerController.SourceType = .photoLibrary
     
     var onSubmit: (UIImage?) -> Void
-
+    
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 16) {
-//                NavigationLink(destination: QuestionView(), isActive: $goToQuestionView) {
-//                                   EmptyView()
-//                               }
-//                               .hidden()
+                //                NavigationLink(destination: QuestionView(), isActive: $goToQuestionView) {
+                //                                   EmptyView()
+                //                               }
+                //                               .hidden()
                 
                 Text("멘토에게 질문하기💬")
                     .font(.title)
@@ -36,7 +36,7 @@ struct CreateQuestionView: View {
                     .frame(maxWidth: .infinity)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 25)
-
+                
                 TextField("제목", text: $title)
                     .padding(12)
                     .background(Color.white)
@@ -48,27 +48,27 @@ struct CreateQuestionView: View {
                     .padding(.horizontal)
                 
                 if let image = selectedImage {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 200)
-                                .cornerRadius(8)
-                                .padding(.leading, 30)
-                        }
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 200)
+                        .cornerRadius(8)
+                        .padding(.leading, 30)
+                }
                 
                 Menu("사진 추가하기") {
-                      Button("Camera") {
-                          imagePickerSourceType = .camera
-                          isShowingImagePicker = true
-                      }
-                      Button("Photo") {
-                          imagePickerSourceType = .photoLibrary
-                          isShowingImagePicker = true
-                      }
+                    Button("Camera") {
+                        imagePickerSourceType = .camera
+                        isShowingImagePicker = true
+                    }
+                    Button("Photo") {
+                        imagePickerSourceType = .photoLibrary
+                        isShowingImagePicker = true
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.trailing, 30)
-
+                
                 TextEditor(text: $content)
                     .padding(10)
                     .frame(height: 150)
@@ -79,17 +79,17 @@ struct CreateQuestionView: View {
                     )
                     .cornerRadius(10)
                     .padding(.horizontal)
-
+                
                 if let error = errorMessage {
                     Text(error)
                         .foregroundColor(.red)
                 }
-
+                
                 //등록 중 로딩
                 if isCreating {
                     ProgressView()
                 }
-
+                
                 Button {
                     onSubmit(selectedImage)
                 } label: {
@@ -107,11 +107,11 @@ struct CreateQuestionView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.top, 30)
-
+                
                 Spacer()
             }
             .padding()
-            .navigationTitle("월스")
+            //            .navigationTitle("월스")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -124,10 +124,17 @@ struct CreateQuestionView: View {
                             .frame(width: 20, height: 30)
                     }
                 }
+                ToolbarItem(placement: .principal) {
+                    Image("logo") 
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 30, height: 18)
+                        
+                }
             }
-        }
-        .sheet(isPresented: $isShowingImagePicker) {
-            ImagePickerView(selectedImage: $selectedImage, sourceType: imagePickerSourceType)
+            .sheet(isPresented: $isShowingImagePicker) {
+                ImagePickerView(selectedImage: $selectedImage, sourceType: imagePickerSourceType)
+            }
         }
     }
 }
