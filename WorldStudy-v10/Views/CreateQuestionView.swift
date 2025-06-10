@@ -30,14 +30,22 @@ struct CreateQuestionView: View {
 //                               }
 //                               .hidden()
                 
-                Text("멘토에게 질문하기")
+                Text("멘토에게 질문하기💬")
                     .font(.title)
                     .bold()
                     .frame(maxWidth: .infinity)
                     .multilineTextAlignment(.center)
+                    .padding(.bottom, 25)
 
                 TextField("제목", text: $title)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding(12)
+                    .background(Color.white)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color("mainColor"), lineWidth: 2)
+                    )
+                    .cornerRadius(10)
+                    .padding(.horizontal)
                 
                 if let image = selectedImage {
                             Image(uiImage: image)
@@ -45,28 +53,32 @@ struct CreateQuestionView: View {
                                 .scaledToFit()
                                 .frame(height: 200)
                                 .cornerRadius(8)
+                                .padding(.leading, 30)
                         }
                 
                 Menu("사진 추가하기") {
                       Button("Camera") {
                           imagePickerSourceType = .camera
                           isShowingImagePicker = true
-//                          if UIImagePickerController.isSourceTypeAvailable(.camera) {
-//                                  imagePickerSourceType = .camera
-//                                  isShowingImagePicker = true
-//                              } else {
-//                                  print("카메라 사용 불가")
-//                              }
                       }
                       Button("Photo") {
                           imagePickerSourceType = .photoLibrary
                           isShowingImagePicker = true
                       }
-                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .padding(.trailing, 30)
 
                 TextEditor(text: $content)
+                    .padding(10)
                     .frame(height: 150)
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.5)))
+                    .background(Color.white)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color("mainColor"), lineWidth: 2)
+                    )
+                    .cornerRadius(10)
+                    .padding(.horizontal)
 
                 if let error = errorMessage {
                     Text(error)
@@ -82,12 +94,19 @@ struct CreateQuestionView: View {
                     onSubmit(selectedImage)
                 } label: {
                     Text("등록")
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
+                        .fontWeight(.bold)
                         .padding()
                         .frame(width: 150)
-                        .background(.blue)
-                        .cornerRadius(15)
-                }.frame(maxWidth: .infinity, alignment: .center)
+                        .background(Color("BackgroundColor2"))
+                        .cornerRadius(25)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 25)
+                                .stroke(Color.black, lineWidth: 0)
+                        )
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, 30)
 
                 Spacer()
             }

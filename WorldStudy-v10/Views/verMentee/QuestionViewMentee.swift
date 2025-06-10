@@ -20,96 +20,106 @@ struct QuestionViewMentee: View {
     var token: String = ""
     @ObservedObject var viewModel: QBoardViewModel
     
+    let backgroundColor = Color("BackgroundColor")
+    
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading, spacing: 2) {
+            ZStack(alignment: .top) {
+                backgroundColor.ignoresSafeArea()
                 
-                //화면이동-메인페이지 생성 후 변경
-                NavigationLink(destination: MyPageMentee(authViewModel: AuthViewModel()), isActive: $goToMyPageMenteeView) {
-                    EmptyView()
-                }
-                .hidden()
+                Image("logo")
+                        .resizable()
+                        .frame(width: 30, height: 18)
+                        .offset(x: -160, y: 0)
                 
-                Text("모든 질문 보기")
-                    .font(.callout)
-                    .foregroundColor(.gray)
-                    .fontWeight(.ultraLight)
-                    .padding(.leading, 25)
-                    .padding(.top, 50)
-                
-                Text("궁금한 게 있으면")
-                    .font(.title3)
-                    .foregroundColor(.black)
-                    .fontWeight(.bold)
-                    .padding(.leading, 25)
-                    .padding(.top, 15)
-                
-                Text("멘토 친구들에게 물어보세요 🌱")
-                    .font(.title3)
-                    .foregroundColor(.black)
-                    .fontWeight(.bold)
-                    .padding(.leading, 25)
-                    .padding(.top, 5)
-                
-                List(viewModel.questions) { question in
-                    NavigationLink(destination: QuestionDetailView(question: question)) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(question.title)
-                                .font(.headline)
-                            Text(question.content)
-                                .font(.subheadline)
-                                .lineLimit(2)
-                                .foregroundColor(.secondary)
-                        }
-                        .padding(.vertical, 4)
+                VStack(alignment: .leading, spacing: 2) {
+                    
+                    //화면이동-메인페이지 생성 후 변경
+                    NavigationLink(destination: MyPageMentee(authViewModel: AuthViewModel()), isActive: $goToMyPageMenteeView) {
+                        EmptyView()
                     }
-                }
-            }
-                
-                //            .navigationTitle("게시판")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("질문하기") {
-                        showingCreateQuestionSheet = true
-                    }
-                }
-            }
-            .onAppear {
-                Task {
-                    await viewModel.fetchQuestions()
-                }
-            }
-            .fullScreenCover(isPresented: $showingCreateQuestionSheet) {
-                CreateQuestionView(
-                    title: $newQuestionTitle,
-                    content: $newQuestionContent,
-                    isPresented: $showingCreateQuestionSheet,
-                    isCreating: $isCreatingQuestion,
-                    errorMessage: $createQuestionError,
-                    onSubmit: { _ in isCreatingQuestion = true
-                        Task {
-                            isCreatingQuestion = true
-                            do {
-                                let result = try await APIService.shared.createQuestion(
-                                    title: newQuestionTitle,
-                                    content: newQuestionContent,
-                                    image: nil
-                                )
-                                if result {
-                                    await viewModel.fetchQuestions()
-                                    newQuestionTitle = ""
-                                    newQuestionContent = ""
-                                    showingCreateQuestionSheet = false
-                                } else {
-                                    createQuestionError = "질문 등록 실패"
-                                }
-                            } catch {
-                                createQuestionError = "오류: \(error.localizedDescription)"
+                    .hidden()
+                    
+                    Text("모든 질문 보기")
+                        .font(.callout)
+                        .foregroundColor(.gray)
+                        .fontWeight(.ultraLight)
+                        .padding(.leading, 25)
+                        .padding(.top, 35)
+                    
+                    Text("궁금한 게 있으면")
+                        .font(.title3)
+                        .foregroundColor(.black)
+                        .fontWeight(.bold)
+                        .padding(.leading, 25)
+                        .padding(.top, 15)
+                    
+                    Text("멘토 친구들에게 물어보세요 🌱")
+                        .font(.title3)
+                        .foregroundColor(.black)
+                        .fontWeight(.bold)
+                        .padding(.leading, 25)
+                        .padding(.top, 5)
+                    
+                    List(viewModel.questions) { question in
+                        NavigationLink(destination: QuestionDetailView(question: question)) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(question.title)
+                                    .font(.headline)
+                                Text(question.content)
+                                    .font(.subheadline)
+                                    .lineLimit(2)
+                                    .foregroundColor(.secondary)
                             }
-                            isCreatingQuestion = false
+                            .padding(.vertical, 4)
                         }
                     }
-                )
+                }
+                
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("질문하기") {
+                            showingCreateQuestionSheet = true
+                        }
+                    }
+                }
+                .onAppear {
+                    Task {
+                        await viewModel.fetchQuestions()
+                    }
+                }
+                .fullScreenCover(isPresented: $showingCreateQuestionSheet) {
+                    CreateQuestionView(
+                        title: $newQuestionTitle,
+                        content: $newQuestionContent,
+                        isPresented: $showingCreateQuestionSheet,
+                        isCreating: $isCreatingQuestion,
+                        errorMessage: $createQuestionError,
+                        onSubmit: { _ in isCreatingQuestion = true
+                            Task {
+                                isCreatingQuestion = true
+                                do {
+                                    let result = try await APIService.shared.createQuestion(
+                                        title: newQuestionTitle,
+                                        content: newQuestionContent,
+                                        image: nil
+                                    )
+                                    if result {
+                                        await viewModel.fetchQuestions()
+                                        newQuestionTitle = ""
+                                        newQuestionContent = ""
+                                        showingCreateQuestionSheet = false
+                                    } else {
+                                        createQuestionError = "질문 등록 실패"
+                                    }
+                                } catch {
+                                    createQuestionError = "오류: \(error.localizedDescription)"
+                                }
+                                isCreatingQuestion = false
+                            }
+                        }
+                    )
+                }
             }
         }
     }
