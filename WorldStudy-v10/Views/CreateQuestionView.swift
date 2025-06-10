@@ -95,7 +95,7 @@ struct CreateQuestionView: View {
                 } label: {
                     Text("등록")
                         .foregroundColor(.black)
-                        .fontWeight(.bold)
+                        .fontWeight(.medium)
                         .padding()
                         .frame(width: 150)
                         .background(Color("BackgroundColor2"))
