@@ -30,32 +30,40 @@ struct MyPageMentor: View {
                 Text("멘토")
                     .font(.callout)
                     .foregroundColor(.gray)
-                    .fontWeight(.ultraLight)
+                    .fontWeight(.light)
                     .padding(.leading, 20)
                     .padding(.top, 50)
                 
                 
-                Text("\(name) 님의 마이페이지")
-                    .font(.title)
-                    .foregroundColor(.black)
-                    .fontWeight(.bold)
-                    .padding(.leading, 20)
-                    .padding(.vertical, 15)
+                HStack {
+                    
+                    Text("\(name) 님의 마이페이지")
+                        .font(.title)
+                        .foregroundColor(.black)
+                        .fontWeight(.bold)
+                    
+                    Image("mentorIcon")
+                        .resizable()
+                        .frame(width: 50, height: 50)
+                    
+                }
+                .padding(.leading, 20)
+                .padding(.vertical, 15)
                 
                 
                 List {
                     Section(header: Text("나의 랭킹")
-                                        .fontWeight(.bold)){
-                        HStack {
-                            Text("\(rank)위")
-                                .font(.title2)
-                                .padding(.vertical,10)
-                            Spacer()
-                            Text("답변 수 \(answer_count)개")
-                                .foregroundColor(.gray)
-                                .font(.title3)
-                        }
-                    }.listRowBackground(Color.blue.opacity(0.2))
+                        .fontWeight(.bold)){
+                            HStack {
+                                Text("\(rank)위")
+                                    .font(.title2)
+                                    .padding(.vertical,10)
+                                Spacer()
+                                Text("답변 수 \(answer_count)개")
+                                    .foregroundColor(.white)
+                                    .font(.title3)
+                            }
+                        }.listRowBackground(Color.brown.opacity(0.9))
                     Section(header: Text("내 정보")) {
                         HStack {
                             Text("이메일")
@@ -79,7 +87,8 @@ struct MyPageMentor: View {
                                     .foregroundColor(.blue)
                             }
                         }
-                    }
+                    }.listRowBackground(Color.gray.opacity(0.2))
+                    
                     //섹션 안에서만 스크롤 되게 수정해야함
                     Section(header: Text("내가 도와준 질문")) {
                         ForEach(myAnswers, id: \.id) { answer in
@@ -96,7 +105,11 @@ struct MyPageMentor: View {
                             }
                         }
                     }
+                    .listRowBackground(Color.gray.opacity(0.2))
                 }
+                .scrollContentBackground(.hidden)
+                .listRowBackground(Color.white)
+                
                 TextFieldWrapper(
                     isPresented: $showPasswordAlert,
                     alert: TextFieldAlert(
@@ -132,11 +145,12 @@ struct MyPageMentor: View {
                 }
             }
         }
+        
     }
 }
 
 
-    
+
 #Preview {
     MyPageMentor(authViewModel: AuthViewModel())
 }

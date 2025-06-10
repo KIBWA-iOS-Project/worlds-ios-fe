@@ -26,17 +26,26 @@ struct MyPageMentee: View {
                 Text("멘티")
                     .font(.callout)
                     .foregroundColor(.gray)
-                    .fontWeight(.ultraLight)
+                    .fontWeight(.light)
                     .padding(.leading, 20)
                     .padding(.top, 50)
                 
                 
-                Text("\(name) 님의 마이페이지")
-                    .font(.title)
-                    .foregroundColor(.black)
-                    .fontWeight(.bold)
-                    .padding(.leading, 20)
-                    .padding(.vertical, 15)
+                HStack {
+                    
+                    Text("\(name) 님의 마이페이지")
+                        .font(.title)
+                        .foregroundColor(.black)
+                        .fontWeight(.bold)
+                    
+                    Image("icon")
+                        .resizable()
+                        .frame(width: 50, height: 50)
+                    
+                }
+                .padding(.leading, 20)
+                .padding(.vertical, 15)
+            
                 
                 
                 List {
@@ -61,16 +70,11 @@ struct MyPageMentee: View {
                             }) {
                                 Text("재설정")
                                     .foregroundColor(.blue)
-                            }
-                            
-//                            .alert("비밀번호 변경", isPresented: $showAlert) {
-//                                Button("OK", action:{})
-//                            } message: {
-//                                Text("새로운 비밀번호를 입력해주세요.")
-//                                //비밀번호 재설정 : UIkit(alert+텍스트필드) 추가 해야함
-//                            }
+                            }.listRowBackground(Color.gray.opacity(0.2))
                         }
                     }
+                    .listRowBackground(Color.gray.opacity(0.2))
+                    
                     //섹션 안에서만 스크롤 되게 수정해야함
                     Section(header: Text("나의 질문")) {
                         ForEach(myQuestions) { post in
@@ -80,7 +84,11 @@ struct MyPageMentee: View {
                             }
                         }
                     }
+                    .listRowBackground(Color.gray.opacity(0.2))
                 }
+                .scrollContentBackground(.hidden)
+                .listRowBackground(Color.white)
+                
                 TextFieldWrapper(
                     isPresented: $showPasswordAlert,
                     alert: TextFieldAlert(
