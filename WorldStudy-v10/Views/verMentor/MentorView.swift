@@ -24,7 +24,7 @@ struct MentorView: View {
                 VStack {
                     Text("\(role)")
                         .padding(.top, 150)
-                        .padding(.leading, -170)
+                        .padding(.leading, -165)
                         .padding(.bottom, 30)
                         .foregroundColor(.gray)
                     
