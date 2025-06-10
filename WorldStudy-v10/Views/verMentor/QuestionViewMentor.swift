@@ -27,7 +27,7 @@ struct QuestionViewMentor: View {
                 Image("logo")
                     .resizable()
                     .frame(width: 30, height: 18)
-                    .offset(x: -160, y: 0)
+                    .offset(x: -145, y: 10)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     
@@ -71,6 +71,8 @@ struct QuestionViewMentor: View {
                             .padding(.vertical, 4)
                         }
                     }
+                    .listRowBackground(Color.brown.opacity(0.2))
+                    
                 }
 
                 .toolbar {
