@@ -35,15 +35,15 @@ Apple의 **Vision 프레임워크**와 기본 **번역 API**를 사용하여 구
 
  <p align="center">
   <img src="./assets/7.png" width="40%" />
-  <img src="./assets/8.png" width="40%" />
-</p>
-<p align="center">
-  <img src="./assets/9.png" width="40%" />
-  <img src="./assets/10.png" width="40%" />
-</p>
-<p align="center">
-  <img src="./assets/11.png" width="40%" />
   <img src="./assets/12.png" width="40%" />
+</p>
+<p align="center">
+  <img src="./assets/8.png" width="40%" />
+  <img src="./assets/9.png" width="40%" />
+</p>
+<p align="center">
+  <img src="./assets/10.png" width="40%" />
+  <img src="./assets/11.png" width="40%" />
 </p>
     
 ---
