@@ -53,7 +53,7 @@ Apple의 **Vision 프레임워크**와 기본 **번역 API**를 사용하여 구
 ---
 
 ## 🚧 기술 아키텍쳐
-![기술 아키텍쳐](assets/archi.png)
+![기술 아키텍쳐](assets/archit.png)
 
 ---
 
